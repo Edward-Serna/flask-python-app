@@ -24,20 +24,29 @@ function App() {
 	}, []);
 
 	return (
-		<div className="App">
-			<p>{currentDate}</p>
+		<div className="Page">
+			<img className="img" src="MF_Logo.svg"/>
 			<div className="Card">
-				<div className="BodyLeft">
-					<img src="./Modifly_Logo.svg" className="img"/>
-				</div>
-				<div className="BodyMain">
-					<div className="inputBody">
-						<p>Machine Name: </p>
-						<p>Username: </p>
-						<p>SSH Key: </p>
-					</div>
-					<button className="button">Next</button>
-				</div>
+				<h2>Welcome</h2>
+				<p>Please complete these steps blah blah blah explanation about this current set of  fields that they need to fill out blah blah blah</p>
+			</div>
+      <div className="Card">
+				<h2>First Time Setup</h2>
+				<div className="CardItem">
+          <p>Username: </p>
+          <input type='text'/>
+        </div>
+        <div className="CardItem">
+          <p>Machine Name: </p>
+          <input type='text'/>
+        </div >
+        <div className="LargeInput">
+          <p>SSH Key: </p>
+          <textarea  type='text' placeholder="Begins with ‘ssh-rsa’, ‘ecdsa-sha2-nistp256’, ‘ecdsa-sha2-nistp384’, ‘ecdsa-sha2-nistp521’, ‘ssh-ed25519’, ‘sk-ecdsa-sha2-nistp256@openssh.com’, or ‘sk-ssh-ed25519@openssh.com’"/>
+        </div>
+      <div className="Button">
+        <h2>Button</h2>
+      </div>
 			</div>
 		</div>
 	);
