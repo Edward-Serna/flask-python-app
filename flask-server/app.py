@@ -6,9 +6,9 @@ x = datetime.datetime.now()
 app = Flask(__name__)
 
 @app.route('/username')
-def get_date():
+def setUsername():
     return {
-        'date': x
+        'username': x
     }
 
 @app.route('/MachineName')
