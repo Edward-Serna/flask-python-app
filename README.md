@@ -1,10 +1,13 @@
 Start up using Flask for backend and React as frontend
 
 ### Flask
-1. ```python3 -m venv venv```
-2. ```source venv/bin/activate```
-2. ```pip install flask python-dotenv```
+1. ```cd flask-server```
+2. ```python -m venv venv```
+3. ```venv\Scripts\activate```
+4. ```pip install flask python-dotenv```
+5. ```python \app.py```
 
 ### React
 1. ```cd react-flsk-app```
 2. ```npm intall```
+3. ```npm start```

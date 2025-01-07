@@ -2,6 +2,7 @@
 
 # dependencies
 react-flask-app/node_modules
+react-flask-app/package-lock.json
 /.pnp
 .pnp.js
 
