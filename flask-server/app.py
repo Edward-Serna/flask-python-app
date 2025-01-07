@@ -1,17 +1,17 @@
-from flask import Flask
+from flask import Flask, request
 import datetime
 import time 
 x = datetime.datetime.now()
 
 app = Flask(__name__)
 
-@app.route('/date')
+@app.route('/username')
 def get_date():
     return {
         'date': x
     }
 
-@app.route('/time')
+@app.route('/MachineName')
 def get_time():
     return {
         'time': time.time()

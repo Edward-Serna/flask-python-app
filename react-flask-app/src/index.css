@@ -34,6 +34,7 @@ html {
 body {
   background-color: var(--background-color);
   background-image: url("../public/Background.svg");
+  background-blend-mode: darken;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
