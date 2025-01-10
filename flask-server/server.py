@@ -1,9 +1,10 @@
 from flask import Flask, request
+
+app = Flask(__name__)
+
 import datetime
 import time 
 x = datetime.datetime.now()
-
-app = Flask(__name__)
 
 @app.route('/username')
 def setUsername():
@@ -11,11 +12,11 @@ def setUsername():
         'username': x
     }
 
-@app.route('/MachineName')
-def get_time():
-    return {
-        'time': time.time()
-    }
+# @app.route('/MachineName')
+# def get_time():
+#     return {
+#         'time': time.time()
+#     }
 
 if __name__ == '__main__':
     app.run(debug=True)
