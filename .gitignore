@@ -22,5 +22,5 @@ yarn-debug.log*
 yarn-error.log*
 
 flask-server/venv
-react-flask-app/node_modules
-react-flask-app/package-lock.json
+react-app/node_modules
+react-app/package-lock.json

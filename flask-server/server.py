@@ -2,12 +2,12 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-import datetime
-import time 
-x = datetime.datetime.now()
+# import datetime
+# import time 
+# x = datetime.datetime.now()
 
-@app.route('/username')
-def setUsername():
+@app.route('/username/<x>')
+def setUsername(x):
     return {
         'username': x
     }
