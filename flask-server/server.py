@@ -1,9 +1,11 @@
+import subprocess
+import platform
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # Import CORS
+from flask_cors import CORS
 import json
 
 app = Flask(__name__)
-CORS(app)  
+CORS(app)
 
 def load_users():
     try:
@@ -16,17 +18,87 @@ def save_users(users):
     with open('users.json', 'w') as file:
         json.dump(users, file)
 
-@app.route("/addUser", methods=["POST"])
+def get_signal_strength():
+    system = platform.system()
 
+    if system == "Windows":
+        command = "netsh wlan show interfaces"
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+
+        for line in output.split(b'\n'):
+            if b"Signal" in line:
+                strength_percent = int(line.split(b':')[1].strip().replace(b'%', b''))
+                strength_dbm = (strength_percent / 2) - 100
+                return strength_dbm, strength_percent
+
+    elif system == "Linux":
+        command = "iwconfig"
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+
+        for line in output.split(b'\n'):
+            if b"Signal level" in line:
+                strength_dbm = int(line.split(b'=')[2].split(b' ')[0])
+                strength_percent = ((strength_dbm + 100) * 2)
+                return strength_dbm, strength_percent
+
+    else:
+        print("Unsupported system.")
+        return None
+
+@app.route("/addUser", methods=["POST"])
 def add_user():
     data = request.get_json()
     username = data.get('username')
     machineName = data.get('machineName')
     users = load_users()
-    users.append({"username": username, "MachineName": machineName})
+    users.append({"username": username, "machineName": machineName})
     save_users(users)
-
     return jsonify({"message": "User added successfully!", "username": username, "MachineName": machineName}), 200
+
+@app.route("/addNetwork", methods=["POST"])
+def add_network():
+  data = request.get_json()
+  selectedNetwork = data.get('selectedNetwork')
+  users = load_users()
+  users.append({"selectedNetwork": selectedNetwork})
+  save_users(users)
+  return jsonify({"message": "Added Network"}), 200
+
+@app.route("/networks")
+def get_networks():
+    try:
+        result = subprocess.run(['netsh', 'wlan', 'show', 'networks'], capture_output=True, text=True, check=True)
+        output = result.stdout.split('\n')
+
+        networks = []
+        current_network = {}
+        for line in output:
+            line = line.strip()
+            if line.startswith("SSID"):
+                if current_network:
+                    networks.append(current_network)
+                    current_network = {}
+                current_network["SSID"] = line.split(":")[1].strip()
+            elif line.startswith("Authentication"):
+                current_network["Authentication"] = line.split(":")[1].strip()
+            elif line.startswith("Encryption"):
+                current_network["Encryption"] = line.split(":")[1].strip()
+
+        signal = get_signal_strength()
+        if signal:
+            signal_dbm, signal_percent = signal
+            current_network["Signal_dBm"] = signal_dbm
+            current_network["Signal_Percent"] = signal_percent
+
+        if current_network:
+            networks.append(current_network)
+
+        return jsonify({"networks": networks}), 200
+
+    except subprocess.CalledProcessError as e:
+        return jsonify({"error": "Failed to retrieve networks", "details": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
