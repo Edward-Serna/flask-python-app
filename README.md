@@ -9,5 +9,5 @@ Start up using Flask for backend and React as frontend
 
 ### React
 1. ```cd react-flsk-app```
-2. ```npm intall```
+2. ```npm install```
 3. ```npm start```
