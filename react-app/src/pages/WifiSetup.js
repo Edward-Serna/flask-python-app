@@ -10,7 +10,7 @@ const WifiSetup = () => {
       .then(res => res.json())
       .then(data => {
         setwifi(data.networks);
-        console.log(data.networks)
+        // console.log(data.networks)
       });
   }, []);
 
@@ -50,9 +50,9 @@ const WifiSetup = () => {
 
               if (response.ok !== null) {
                 const result = await response.json();
-                console.log(result.message);
+                console.log(result);
               } else {
-                console.error("Failed to add user");
+                console.log("error");
               }
             }}
           >

@@ -32,7 +32,7 @@
 .Card2 {
   background-color: var(--Card2-Fill);
   border: 1px solid var(--Card2-Stroke);
-  border-radius: 10px;
+  border-radius: 3%;
   height: 300px;
   width: 100%;
   display: flex;
@@ -138,5 +138,18 @@
 }
 
 .Button {
-  align-self: end;
+  display: flex; 
+  align-self: flex-end;
+  justify-self: end;
+  justify-content: end;
+  bottom: 50px;
+}
+
+.Button button{
+  background-color: var(--Button-Fill);
+  border: 1px solid var(--Button-Stroke);
+  border-radius: 5px;
+  color: white;
+  height: 30px;
+  width: 75px;
 }

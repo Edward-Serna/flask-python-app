@@ -52,19 +52,25 @@ def add_user():
     data = request.get_json()
     username = data.get('username')
     machineName = data.get('machineName')
+    sshKey = data.get('sshKey')
     users = load_users()
-    users.append({"username": username, "machineName": machineName})
+    users.append({"username": username, "machineName": machineName, "sshKey": sshKey})
     save_users(users)
-    return jsonify({"message": "User added successfully!", "username": username, "MachineName": machineName}), 200
+    return jsonify({"message": "User added successfully!", "username": username, "MachineName": machineName, "sshKey": sshKey}), 200
 
 @app.route("/addNetwork", methods=["POST"])
 def add_network():
-  data = request.get_json()
-  selectedNetwork = data.get('selectedNetwork')
-  users = load_users()
-  users.append({"selectedNetwork": selectedNetwork})
-  save_users(users)
-  return jsonify({"message": "Added Network"}), 200
+    data = request.get_json()
+    selectedNetwork = data.get('selectedNetwork')
+    users = load_users()
+
+    if len(users) > 0:
+        users[-1].update({"selectedNetwork": selectedNetwork})
+        save_users(users)
+        return jsonify({"message": "Added Network to the last user", "users": users}), 200
+    else:
+        return jsonify({"error":"No users found to add network"}), 400
+
 
 @app.route("/networks")
 def get_networks():
