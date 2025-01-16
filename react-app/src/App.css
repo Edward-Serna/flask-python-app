@@ -129,6 +129,7 @@
 
 .LargeInput textarea::placeholder {
   font-size: 12px;
+  color: #ADADAD;
 }
 
 .LargeInput textarea:focus {
