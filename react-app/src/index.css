@@ -56,7 +56,9 @@ body {
 *::-webkit-scrollbar-track {
   background: var(--Dark-700);
   /* border: 1px solid var(--Dark-800); */
-  border: 1px solid var(--Card2-Stroke);
+  /* border: 1px solid var(--Card2-Stroke); */
+    border:none;
+
   border-radius: 8px;
 }
 
