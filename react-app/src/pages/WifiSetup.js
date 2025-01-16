@@ -14,6 +14,13 @@ const WifiSetup = () => {
       });
   }, []);
 
+  const signalIcon = (sig_percent) => {
+    if (sig_percent > 75) {return <img src="perfectSignal.svg"/>}
+    else if (sig_percent > 50) { return  <img src="goodSignal.svg"/>}
+    else if (sig_percent > 25) { return  <img src="lowSignal.svg"/>}
+    else return  <img src="lowSignal.svg"/>
+  }
+
   return (
     <div className="Page">
       <img className="img" alt="logo" src="MF_Logo.svg" />
@@ -23,16 +30,18 @@ const WifiSetup = () => {
           <div className="Card2">
             {(wifi) ?
               wifi.map((obj, index) => (
-                <div key={index} 
-                    className={`Card2Item ${selectedNetwork === obj.SSID ? 'selected' : ''}`} 
-                    onClick={() => setSelectedNetwork(obj.SSID)}>
+                <div key={index}
+                  className={`Card2Item ${selectedNetwork === obj.SSID ? 'selected' : ''}`}
+                  onClick={() => setSelectedNetwork(obj.SSID)}>
                   <p>{obj.SSID}</p>
-                  <p>{(obj.SSID && !obj.Signal_Percent) ? ("100") : (obj.Signal_Percent)}%</p>
+                  <p>{(obj.SSID && !obj.Signal_Percent) ?
+                    (<img src="perfectSignal.svg"/>) :
+                    (signalIcon(obj.Signal_Percent))
+                  }</p>
                 </div>
-
               )) :
               <div className="Card2Item">
-                <p>Does not have WiFi or needs location to be turned ON</p>
+                <p>NO WiFi, or needs location to be turned ON</p>
               </div>
             }
           </div>
@@ -45,7 +54,7 @@ const WifiSetup = () => {
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({selectedNetwork}),
+                body: JSON.stringify({ selectedNetwork }),
               });
 
               if (response.ok !== null) {
