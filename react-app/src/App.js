@@ -8,7 +8,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />}/>
-        <Route path= "WifiSetup" element={<WifiSetup />}/>
+        <Route path= "/WifiSetup" element={<WifiSetup />}/>
       </Routes>
     </BrowserRouter>
   )

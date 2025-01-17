@@ -1,8 +1,15 @@
 import subprocess
 import platform
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask import Flask, request, jsonify # type: ignore
+from flask_cors import CORS # type: ignore
 import json
+
+import sdbus
+from sdbus_block.networkmanager import (
+    NetworkConnectionSettings,
+    NetworkManager,
+    NetworkManagerSettings,
+)
 
 app = Flask(__name__)
 CORS(app)
@@ -71,40 +78,42 @@ def add_network():
     else:
         return jsonify({"error":"No users found to add network"}), 400
 
-
 @app.route("/networks")
-def get_networks():
+def networks_endpoint():
     try:
-        result = subprocess.run(['netsh', 'wlan', 'show', 'networks'], capture_output=True, text=True, check=True)
-        output = result.stdout.split('\n')
+        # Initialize the system bus and NetworkManager
+        sdbus.set_default_bus(sdbus.sd_bus_open_system())
+        network_manager = NetworkManager()
 
-        networks = []
-        current_network = {}
-        for line in output:
-            line = line.strip()
-            if line.startswith("SSID"):
-                if current_network:
-                    networks.append(current_network)
-                    current_network = {}
-                current_network["SSID"] = line.split(":")[1].strip()
-            elif line.startswith("Authentication"):
-                current_network["Authentication"] = line.split(":")[1].strip()
-            elif line.startswith("Encryption"):
-                current_network["Encryption"] = line.split(":")[1].strip()
+        # Fetch all devices managed by NetworkManager
+        # Example of fetching devices
+        devices = network_manager.get_devices()  # This might be the correct method
+        print("Devices:", devices)
 
-        signal = get_signal_strength()
-        if signal:
-            signal_dbm, signal_percent = signal
-            current_network["Signal_dBm"] = signal_dbm
-            current_network["Signal_Percent"] = signal_percent
+        for device in devices:
+            print("Device:", device)
+            if device.device_type == "wifi":
+                access_points = device.get_access_points()
+                print("Access Points:", access_points)
+                
+                for ap in access_points:
+                    ssid = ap.ssid
+                    signal_strength_dbm = ap.signal_strength
+                    signal_percent = max(0, min(100, (signal_strength_dbm + 100) * 2))
+                    
+                    available_networks.append({
+                        "SSID": ssid,
+                        "Signal_Strength": signal_strength_dbm,
+                        "Signal_Percent": signal_percent
+                    })
 
-        if current_network:
-            networks.append(current_network)
 
-        return jsonify({"networks": networks}), 200
+        return jsonify({"networks": available_networks}), 200
 
-    except subprocess.CalledProcessError as e:
-        return jsonify({"error": "Failed to retrieve networks", "details": str(e)}), 400
+    except Exception as e:
+        print("Error occurred:", e)  # Debugging line to capture the exception
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

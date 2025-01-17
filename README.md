@@ -45,6 +45,10 @@ pip install Flask-Cors
 ```bash
 python server.py
 ```
+or 
+```bash
+flask --app server run --debug
+```
 ### Linux
 ```bash
 cd flask-server
@@ -62,9 +66,12 @@ pip install flask python-dotenv
 pip install Flask-Cors
 ```
 ```bash
-python server.py
+python3 server.py
 ```
-
+or 
+```bash
+flask --app server run --debug
+```
 ## React (Webpage)
 ### Install & Run
 ```bash
