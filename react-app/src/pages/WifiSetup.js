@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 const WifiSetup = () => {
   const [wifi, setwifi] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState("")
+  
   useEffect(() => {
     fetch('/networks')
       .then(res => res.json())
