@@ -104,7 +104,7 @@ def get_networks():
         return jsonify({"networks": networks}), 200
 
     except subprocess.CalledProcessError as e:
-        return jsonify({"error": "Failed to retrieve networks", "details": str(e)}), 500
+        return jsonify({"error": "Failed to retrieve networks", "details": str(e)}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)

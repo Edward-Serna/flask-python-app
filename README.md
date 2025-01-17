@@ -1,3 +1,4 @@
+<img src="./react-app/public/Modifly_Logo.svg" height="45"><br>
 # Getting Started Wizard
 Start up page using React as frontend and Flask for backend.
 
