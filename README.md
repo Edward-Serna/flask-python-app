@@ -24,6 +24,32 @@ node -v
 npm -v
 ```
 ## Flask (API Server)
+### Linux
+```bash
+cd flask-server
+```
+```bash
+python3 -m venv venv
+```
+```bash
+source venv/bin/activate
+```
+```bash
+pip install flask python-dotenv
+```
+```bash
+pip install Flask-Cors
+```
+```bash
+pip install sdbus
+```
+```bash
+python3 server.py
+```
+or 
+```bash
+flask --app server run --debug
+```
 ### Windows
 ```bash 
 cd flask-server
@@ -43,30 +69,10 @@ pip install flask python-dotenv
 pip install Flask-Cors
 ```
 ```bash
+pip install sdbus
+```
+```bash
 python server.py
-```
-or 
-```bash
-flask --app server run --debug
-```
-### Linux
-```bash
-cd flask-server
-```
-```bash
-python3 -m venv venv
-```
-```bash
-source venv/bin/activate
-```
-```bash
-pip install flask python-dotenv
-```
-```bash
-pip install Flask-Cors
-```
-```bash
-python3 server.py
 ```
 or 
 ```bash
