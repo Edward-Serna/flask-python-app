@@ -81,6 +81,7 @@ def add_network():
 @app.route("/networks")
 def networks_endpoint():
     try:
+        system = platform.system()
         if system == "Windows":
             result = subprocess.run(['netsh', 'wlan', 'show', 'networks'], capture_output=True, text=True, check=True)
             output = result.stdout.split('\n')
