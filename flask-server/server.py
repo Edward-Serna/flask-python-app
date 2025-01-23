@@ -81,38 +81,69 @@ def add_network():
 @app.route("/networks")
 def networks_endpoint():
     try:
-        # Initialize the system bus and NetworkManager
-        sdbus.set_default_bus(sdbus.sd_bus_open_system())
-        network_manager = NetworkManager()
+        if system == "Windows":
+            result = subprocess.run(['netsh', 'wlan', 'show', 'networks'], capture_output=True, text=True, check=True)
+            output = result.stdout.split('\n')
 
-        # Fetch all devices managed by NetworkManager
-        # Example of fetching devices
-        devices = network_manager.get_devices()  # This might be the correct method
-        print("Devices:", devices)
+            networks = []
+            current_network = {}
+            for line in output:
+                line = line.strip()
+                if line.startswith("SSID"):
+                    if current_network:
+                        networks.append(current_network)
+                        current_network = {}
+                    current_network["SSID"] = line.split(":")[1].strip()
+                elif line.startswith("Authentication"):
+                    current_network["Authentication"] = line.split(":")[1].strip()
+                elif line.startswith("Encryption"):
+                    current_network["Encryption"] = line.split(":")[1].strip()
 
-        for device in devices:
-            print("Device:", device)
-            if device.device_type == "wifi":
-                access_points = device.get_access_points()
-                print("Access Points:", access_points)
-                
-                for ap in access_points:
-                    ssid = ap.ssid
-                    signal_strength_dbm = ap.signal_strength
-                    signal_percent = max(0, min(100, (signal_strength_dbm + 100) * 2))
+            signal = get_signal_strength()
+            if signal:
+                signal_dbm, signal_percent = signal
+                current_network["Signal_dBm"] = signal_dbm
+                current_network["Signal_Percent"] = signal_percent
+
+            if current_network:
+                networks.append(current_network)
+
+            return jsonify({"networks": networks}), 200
+        elif system == "Linux":
+            # Initialize the system bus and NetworkManager
+            sdbus.set_default_bus(sdbus.sd_bus_open_system())
+            network_manager = NetworkManager()
+
+            # Fetch all devices managed by NetworkManager
+            # Example of fetching devices
+            devices = network_manager.get_devices()  # This might be the correct method
+            print("Devices:", devices)
+
+            for device in devices:
+                print("Device:", device)
+                if device.device_type == "wifi":
+                    access_points = device.get_access_points()
+                    print("Access Points:", access_points)
                     
-                    available_networks.append({
-                        "SSID": ssid,
-                        "Signal_Strength": signal_strength_dbm,
-                        "Signal_Percent": signal_percent
-                    })
-
+                    for ap in access_points:
+                        ssid = ap.ssid
+                        signal_strength_dbm = ap.signal_strength
+                        signal_percent = max(0, min(100, (signal_strength_dbm + 100) * 2))
+                        
+                        available_networks.append({
+                            "SSID": ssid,
+                            "Signal_Strength": signal_strength_dbm,
+                            "Signal_Percent": signal_percent
+                        })
+        else:
+            print("Unsupported system.")
+            return None
 
         return jsonify({"networks": available_networks}), 200
 
     except Exception as e:
-        print("Error occurred:", e)  # Debugging line to capture the exception
-        return jsonify({"error": str(e)}), 500
+        print("Error occurred:", e) 
+        return jsonify({"error": str(e)}), 400
 
 
 if __name__ == '__main__':
