@@ -41,6 +41,9 @@ pip install flask python-dotenv
 pip install Flask-Cors
 ```
 ```bash
+pip install sdbus
+```
+```bash
 python3 server.py
 ```
 or 
@@ -64,6 +67,9 @@ pip install flask python-dotenv
 ``` 
 ```bash
 pip install Flask-Cors
+```
+```bash
+pip install sdbus
 ```
 ```bash
 python server.py
