@@ -135,11 +135,11 @@ def networks_endpoint():
                             "Signal_Strength": signal_strength_dbm,
                             "Signal_Percent": signal_percent
                         })
+                return jsonify({"networks": available_networks}), 200
         else:
             print("Unsupported system.")
             return None
 
-        return jsonify({"networks": available_networks}), 200
 
     except Exception as e:
         print("Error occurred:", e) 
