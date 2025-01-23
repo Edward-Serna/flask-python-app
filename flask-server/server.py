@@ -1,7 +1,7 @@
 import subprocess
 import platform
-from flask import Flask, request, jsonify # type: ignore
-from flask_cors import CORS # type: ignore
+from flask import Flask, request, jsonify 
+from flask_cors import CORS 
 import json
 
 import sdbus
