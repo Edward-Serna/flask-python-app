@@ -1,15 +1,15 @@
-import subprocess
-import platform
-from flask import Flask, request, jsonify 
-from flask_cors import CORS 
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import json
 
 import sdbus
 from sdbus_block.networkmanager import (
-    NetworkConnectionSettings,
     NetworkManager,
-    NetworkManagerSettings,
+    NetworkDeviceGeneric,
+    IPv4Config,
 )
+from sdbus import sd_bus_open_system
+
 
 app = Flask(__name__)
 CORS(app)
@@ -24,35 +24,6 @@ def load_users():
 def save_users(users):
     with open('users.json', 'w') as file:
         json.dump(users, file)
-
-def get_signal_strength():
-    system = platform.system()
-
-    if system == "Windows":
-        command = "netsh wlan show interfaces"
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        output, error = process.communicate()
-
-        for line in output.split(b'\n'):
-            if b"Signal" in line:
-                strength_percent = int(line.split(b':')[1].strip().replace(b'%', b''))
-                strength_dbm = (strength_percent / 2) - 100
-                return strength_dbm, strength_percent
-
-    elif system == "Linux":
-        command = "iwconfig"
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        output, error = process.communicate()
-
-        for line in output.split(b'\n'):
-            if b"Signal level" in line:
-                strength_dbm = int(line.split(b'=')[2].split(b' ')[0])
-                strength_percent = ((strength_dbm + 100) * 2)
-                return strength_dbm, strength_percent
-
-    else:
-        print("Unsupported system.")
-        return None
 
 @app.route("/addUser", methods=["POST"])
 def add_user():
@@ -81,36 +52,29 @@ def add_network():
 @app.route("/networks")
 def networks_endpoint():
     try:
-        sdbus.set_default_bus(sdbus.sd_bus_open_system())
-        network_manager = NetworkManager()
+        system_bus = sd_bus_open_system()  # We need system bus
 
-        devices = network_manager.get_devices() 
-        print("Devices:", devices)
+        nm = NetworkManager(system_bus)
 
-        for device in devices:
-            print("Device:", device)
-            if device.device_type == "wifi":
-                access_points = device.get_access_points()
-                print("Access Points:", access_points)
-                
-                for ap in access_points:
-                    ssid = ap.ssid
-                    signal_strength_dbm = ap.signal_strength
-                    signal_percent = max(0, min(100, (signal_strength_dbm + 100) * 2))
-                    
-                    available_networks.append({
-                        "SSID": ssid,
-                        "Signal_Strength": signal_strength_dbm,
-                        "Signal_Percent": signal_percent
-                    })
-            return jsonify({"networks": available_networks}), 200
-        print("Unsupported system.")
-        return None
+        devices_paths = nm.get_devices()
+
+        for device_path in devices_paths:
+            generic_device = NetworkDeviceGeneric(device_path, system_bus)
+            print('Device: ', generic_device.interface)
+            device_ip4_conf_path = generic_device.ip4_config
+            if device_ip4_conf_path == '/':
+                # This is how NetworkManager indicates there is no ip config
+                # for the interface
+                continue
+            else:
+                ip4_conf = IPv4Config(device_ip4_conf_path, system_bus)
+                for address_data in ip4_conf.address_data:
+                    print('     Ip Adress:', address_data['address'][1])
+        return none
 
     except Exception as e:
-        print("Error occurred:", e) 
+        print("Error occurred:", e)
         return jsonify({"error": str(e)}), 400
-
 
 if __name__ == '__main__':
     app.run(debug=True)
