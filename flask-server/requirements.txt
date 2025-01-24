@@ -6,6 +6,7 @@ importlib-metadata==8.5.0
 itsdangerous==2.2.0
 jinja2==3.1.5
 MarkupSafe==2.1.5
+pydbus==0.6.0
 python-dotenv==1.0.1
 sdbus==0.13.0
 sdbus-networkmanager==2.0.0

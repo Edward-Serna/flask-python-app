@@ -3,14 +3,16 @@ from flask_cors import CORS
 import json
 
 import sdbus
+
 from sdbus_block.networkmanager import (
-    NetworkManager,
     NetworkDeviceGeneric,
-    IPv4Config,
+    NetworkConnectionSettings,
+    NetworkManagerSettings,
+    NetworkDeviceWireless,
+    NetworkManager,
+    NetworkDeviceWireless
 )
-from sdbus import sd_bus_open_system
-
-
+from sdbus_block.networkmanager.enums import DeviceType
 app = Flask(__name__)
 CORS(app)
 
@@ -52,25 +54,33 @@ def add_network():
 @app.route("/networks")
 def networks_endpoint():
     try:
-        system_bus = sd_bus_open_system()  # We need system bus
+        sdbus.set_default_bus(sdbus.sd_bus_open_system())
+        network_manager = NetworkManager()
+        networwork_manager_settings = NetworkManagerSettings()
 
-        nm = NetworkManager(system_bus)
+        connection = NetworkConnectionSettings(networwork_manager_settings.connections[0])
+        setting_dataclass = connection.get_profile()
 
-        devices_paths = nm.get_devices()
+        return jsonify({"message": setting_dataclass}), 200
+        # system_bus = sd_bus_open_system()  # We need system bus
 
-        for device_path in devices_paths:
-            generic_device = NetworkDeviceGeneric(device_path, system_bus)
-            print('Device: ', generic_device.interface)
-            device_ip4_conf_path = generic_device.ip4_config
-            if device_ip4_conf_path == '/':
-                # This is how NetworkManager indicates there is no ip config
-                # for the interface
-                continue
-            else:
-                ip4_conf = IPv4Config(device_ip4_conf_path, system_bus)
-                for address_data in ip4_conf.address_data:
-                    print('     Ip Adress:', address_data['address'][1])
-        return none
+        # nm = NetworkManager(system_bus)
+
+        # devices_paths = nm.get_devices()
+
+        # for device_path in devices_paths:
+        #     generic_device = NetworkDeviceGeneric(device_path, system_bus)
+        #     print('Device: ', generic_device.interface)
+        #     device_ip4_conf_path = generic_device.ip4_config
+        #     if device_ip4_conf_path == '/':
+        #         # This is how NetworkManager indicates there is no ip config
+        #         # for the interface
+        #         continue
+        #     else:
+        #         ip4_conf = IPv4Config(device_ip4_conf_path, system_bus)
+        #         for address_data in ip4_conf.address_data:
+        #             print('     Ip Address:', address_data['address'][1])
+        # return none
 
     except Exception as e:
         print("Error occurred:", e)
