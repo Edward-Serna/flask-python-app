@@ -48,6 +48,11 @@
   padding: 10px;
 }
 
+.SSID {
+  display: flex;
+  gap: 5px;
+}
+
 .Card2Item:hover,
 .Card2Item.selected {
   background-color: var(--Card2-Fill-Hover);
@@ -153,4 +158,26 @@
   color: white;
   height: 30px;
   width: 75px;
+}
+
+.Password {
+  display: flex;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.Password input {
+  height: auto;
+  width: 100%;
+  padding: 4px;
+  color: #F2F2F2;
+  background-color: var(--Input-Fill);
+  border: 1px solid var(--Input-Stroke);
+  border-radius: 3px;
+  margin-left: 5px;
+}
+
+.ErrorMessage {
+  color: rgb(250, 103, 103);
+  font-weight: bold;
 }

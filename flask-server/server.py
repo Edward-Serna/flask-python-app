@@ -1,90 +1,102 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
+import subprocess
 
-import sdbus
-
-from sdbus_block.networkmanager import (
-    NetworkDeviceGeneric,
-    NetworkConnectionSettings,
-    NetworkManagerSettings,
-    NetworkDeviceWireless,
-    NetworkManager,
-    NetworkDeviceWireless
-)
-from sdbus_block.networkmanager.enums import DeviceType
 app = Flask(__name__)
 CORS(app)
 
+USERS_FILE = "users.json"
+
 def load_users():
     try:
-        with open('users.json', 'r') as file:
+        with open(USERS_FILE, "r") as file:
             return json.load(file)
     except FileNotFoundError:
         return []
 
 def save_users(users):
-    with open('users.json', 'w') as file:
-        json.dump(users, file)
+    with open(USERS_FILE, "w") as file:
+        json.dump(users, file, indent=4)
 
 @app.route("/addUser", methods=["POST"])
 def add_user():
     data = request.get_json()
-    username = data.get('username')
-    machineName = data.get('machineName')
-    sshKey = data.get('sshKey')
+    if not data:
+        return jsonify({"error": "Invalid request data"}), 400
+
     users = load_users()
-    users.append({"username": username, "machineName": machineName, "sshKey": sshKey})
+    users.append({
+        "username": data.get("username"),
+        "machineName": data.get("machineName"),
+        "sshKey": data.get("sshKey"),
+    })
     save_users(users)
-    return jsonify({"message": "User added successfully!", "username": username, "MachineName": machineName, "sshKey": sshKey}), 200
+
+    return jsonify({"message": "User added successfully!", "users": users}), 200
+
 
 @app.route("/addNetwork", methods=["POST"])
 def add_network():
     data = request.get_json()
-    selectedNetwork = data.get('selectedNetwork')
-    users = load_users()
+    if not data or "selectedNetwork" not in data:
+        return jsonify({"error": "Invalid request data"}), 400
 
-    if len(users) > 0:
-        users[-1].update({"selectedNetwork": selectedNetwork})
-        save_users(users)
-        return jsonify({"message": "Added Network to the last user", "users": users}), 200
-    else:
-        return jsonify({"error":"No users found to add network"}), 400
+    selected_network = data["selectedNetwork"].get("SSID")
+    password = data.get("password", "")
 
-@app.route("/networks")
-def networks_endpoint():
+    if not selected_network:
+        return jsonify({"error": "SSID is required"}), 400
+
+    print(f"Connecting to network: {selected_network}")
+
     try:
-        sdbus.set_default_bus(sdbus.sd_bus_open_system())
-        network_manager = NetworkManager()
-        networwork_manager_settings = NetworkManagerSettings()
+        status_result = subprocess.run(["nmcli", "dev", "status"], capture_output=True, text=True, check=True)
+        print("Wi-Fi status:\n", status_result.stdout)
 
-        connection = NetworkConnectionSettings(networwork_manager_settings.connections[0])
-        setting_dataclass = connection.get_profile()
+        cmd = ["sudo", "nmcli", "dev", "wifi", "connect", selected_network]
+        if password:
+            cmd += ["password", password]
 
-        return jsonify({"message": setting_dataclass}), 200
-        # system_bus = sd_bus_open_system()  # We need system bus
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        print(f"Successfully connected to {selected_network}")
 
-        # nm = NetworkManager(system_bus)
+        users = load_users()
+        if users:
+            users[-1]["selectedNetwork"] = data["selectedNetwork"]
+            save_users(users)
+            return jsonify({"message": "Network added to last user", "users": users}), 200
 
-        # devices_paths = nm.get_devices()
+        return jsonify({"error": "No users found to add network"}), 400
 
-        # for device_path in devices_paths:
-        #     generic_device = NetworkDeviceGeneric(device_path, system_bus)
-        #     print('Device: ', generic_device.interface)
-        #     device_ip4_conf_path = generic_device.ip4_config
-        #     if device_ip4_conf_path == '/':
-        #         # This is how NetworkManager indicates there is no ip config
-        #         # for the interface
-        #         continue
-        #     else:
-        #         ip4_conf = IPv4Config(device_ip4_conf_path, system_bus)
-        #         for address_data in ip4_conf.address_data:
-        #             print('     Ip Address:', address_data['address'][1])
-        # return none
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to connect: {e}")
+        return jsonify({"error": f"Failed to connect to {selected_network}: {e.stderr}"}), 400
 
-    except Exception as e:
-        print("Error occurred:", e)
-        return jsonify({"error": str(e)}), 400
 
-if __name__ == '__main__':
+@app.route("/networks", methods=["GET"])
+def networks():
+    try:
+        networks = []
+        result = subprocess.run(
+            ["nmcli", "-t", "-f", "SSID,SIGNAL,SECURITY", "dev", "wifi", "list"],
+            capture_output=True, text=True, check=True
+        )
+        for line in result.stdout.strip().split("\n"):
+            parts = line.split(":")
+            if len(parts) >= 2:
+                ssid = parts[0].strip()
+                signal_percent = int(parts[1].strip()) if parts[1].strip().isdigit() else 0
+                security = parts[2].strip() if len(parts) > 2 else "Unknown"
+
+                if ssid and not any(net["SSID"] == ssid for net in networks):
+                    networks.append({"SSID": ssid, "Signal_Percent": signal_percent, "Security": security})
+
+        return jsonify({"networks": networks}), 200
+
+    except subprocess.CalledProcessError as e:
+        return jsonify({"error": f"Failed to fetch networks: {e.stderr}"}), 400
+
+
+if __name__ == "__main__":
     app.run(debug=True)
