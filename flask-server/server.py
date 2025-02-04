@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
+import os
 import subprocess
 
 app = Flask(__name__)
@@ -9,10 +10,13 @@ CORS(app)
 USERS_FILE = "users.json"
 
 def load_users():
+    if not os.path.exists(USERS_FILE):
+        return []
     try:
         with open(USERS_FILE, "r") as file:
-            return json.load(file)
-    except FileNotFoundError:
+            users = json.load(file)
+            return users if isinstance(users, list) else []
+    except (json.JSONDecodeError, FileNotFoundError):
         return []
 
 def save_users(users):
@@ -35,53 +39,59 @@ def add_user():
 
     return jsonify({"message": "User added successfully!", "users": users}), 200
 
-
 @app.route("/addNetwork", methods=["POST"])
 def add_network():
-    data = request.get_json()
-    if not data or "selectedNetwork" not in data:
-        return jsonify({"error": "Invalid request data"}), 400
-
-    selected_network = data["selectedNetwork"].get("SSID")
-    password = data.get("password", "")
-
-    if not selected_network:
-        return jsonify({"error": "SSID is required"}), 400
-
-    print(f"Connecting to network: {selected_network}")
-
     try:
-        status_result = subprocess.run(["nmcli", "dev", "status"], capture_output=True, text=True, check=True)
-        print("Wi-Fi status:\n", status_result.stdout)
+        data = request.json
+        ssid = data.get("selectedNetwork", {}).get("SSID")
+        password = data.get("password", "")
 
-        cmd = ["sudo", "nmcli", "dev", "wifi", "connect", selected_network]
-        if password:
-            cmd += ["password", password]
+        if not ssid:
+            return jsonify({"message": "No network selected"}), 400
 
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        print(f"Successfully connected to {selected_network}")
+        result = subprocess.run(
+            ["sudo", "nmcli", "device", "wifi", "connect", ssid, "password", password] if password else
+            ["sudo", "nmcli", "device", "wifi", "connect", ssid],
+            capture_output=True, text=True, check=True
+        )
 
-        users = load_users()
-        if users:
-            users[-1]["selectedNetwork"] = data["selectedNetwork"]
-            save_users(users)
-            return jsonify({"message": "Network added to last user", "users": users}), 200
+        connection_check = subprocess.run(
+            ["nmcli", "-t", "-f", "NAME,DEVICE,ACTIVE", "connection", "show", "--active"],
+            capture_output=True, text=True, check=True
+        )
 
-        return jsonify({"error": "No users found to add network"}), 400
+        if any(ssid in line for line in connection_check.stdout.strip().split("\n")):
+            users = load_users()
+
+            if len(users) > 0:
+                new_network = {
+                    "SSID": ssid,
+                    "Security": data.get("selectedNetwork", {}).get("Security", "Unknown")
+                }
+                user = users[0] 
+                user['network'] = new_network
+                save_users(users)
+
+                return jsonify({"message": f"Successfully connected to {ssid} and added network."}), 200
+            else:
+                return jsonify({"message": "No users found to add network to."}), 400
+        else:
+            return jsonify({"message": "Failed to connect to the network, please check your credentials."}), 400
 
     except subprocess.CalledProcessError as e:
-        print(f"Failed to connect: {e}")
-        return jsonify({"error": f"Failed to connect to {selected_network}: {e.stderr}"}), 400
-
+        return jsonify({"message": f"Error: {e.stderr}"}), 500
 
 @app.route("/networks", methods=["GET"])
 def networks():
     try:
         networks = []
+        connected_networks = []
+
         result = subprocess.run(
             ["nmcli", "-t", "-f", "SSID,SIGNAL,SECURITY", "dev", "wifi", "list"],
             capture_output=True, text=True, check=True
         )
+
         for line in result.stdout.strip().split("\n"):
             parts = line.split(":")
             if len(parts) >= 2:
@@ -92,7 +102,17 @@ def networks():
                 if ssid and not any(net["SSID"] == ssid for net in networks):
                     networks.append({"SSID": ssid, "Signal_Percent": signal_percent, "Security": security})
 
-        return jsonify({"networks": networks}), 200
+        result_connected = subprocess.run(
+            ["nmcli", "-t", "-f", "NAME,DEVICE,ACTIVE", "connection", "show", "--active"],
+            capture_output=True, text=True, check=True
+        )
+
+        for line in result_connected.stdout.strip().split("\n"):
+            parts = line.split(":")
+            if len(parts) >= 3 and parts[2].strip() == "yes":
+                connected_networks.append({"SSID": parts[0].strip(), "Device": parts[1].strip()})
+
+        return jsonify({"networks": networks, "connectedNetworks": connected_networks}), 200
 
     except subprocess.CalledProcessError as e:
         return jsonify({"error": f"Failed to fetch networks: {e.stderr}"}), 400

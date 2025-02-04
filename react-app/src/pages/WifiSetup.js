@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 const WifiSetup = () => {
   const [wifi, setwifi] = useState([]);
+  const [connectedNetworks, setConnectedNetworks] = useState([]);
   const [selectedNetwork, setSelectedNetwork] = useState({});
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // State for storing error message
+  const [response, setResponse] = useState("");
+  const [next, setNext] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/networks')
       .then(res => res.json())
       .then(data => {
         setwifi(data.networks);
+        setConnectedNetworks(data.connectedNetworks);
         console.log(data);
       });
   }, []);
@@ -23,11 +28,58 @@ const WifiSetup = () => {
     else return <img src="lowSignal.svg" />;
   };
 
+  const handleConnect = async () => {
+    setResponse("");
+    if (!selectedNetwork.SSID) {
+      setResponse("Please select a network.");
+      return;
+    }
+  
+    if (selectedNetwork.Security && !password) {
+      setResponse("Password is required for this network.");
+      return;
+    }
+  
+    try {
+      setResponse("Connecting...");
+      const response = await fetch("http://localhost:5000/addNetwork", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ selectedNetwork, password }),
+      });
+  
+      const result = await response.json();
+      console.log(result);
+  
+      if (response.ok && result.message.includes("Successfully connected")) {
+        setResponse("Successfully Connected!");
+        setNext(true);
+      } else {
+        setResponse("Failed to connect. Please try again.");
+      }
+    } catch (error) {
+      console.error("Connection error:", error);
+      setResponse("Failed to connect. Please try again.");
+    }
+  };
+  
+
   return (
     <div className="Page">
       <img className="img" alt="logo" src="MF_Logo.svg" />
       <div className="Card">
-        <h2>Visible Networks</h2>
+        <h2>Networks</h2>
+        {connectedNetworks.length > 0 && (
+          <div style={{ marginBottom: "10px" }}>
+            <h3>Connected Networks</h3>
+            {connectedNetworks.map((net, index) => (
+              <div key={index}>
+                <p>{net.SSID} (Device: {net.Device})</p>
+              </div>
+            ))}
+          </div>
+        )}
+        <h3>Available Networks</h3>
         <div className="CardItem">
           <div className="Card2">
             {wifi.length > 0 ? (
@@ -48,7 +100,7 @@ const WifiSetup = () => {
               ))
             ) : (
               <div className="Card2Item">
-                <p>NO WiFi, or needs location to be turned ON</p>
+                <p>Loading Networks...</p>
               </div>
             )}
           </div>
@@ -64,50 +116,20 @@ const WifiSetup = () => {
             />
           </div>
         )}
-        {error && (
-          <div className="ErrorMessage">
-            <p>{error}</p>
+        {response && (
+          <div className={(response.includes("Success")) ? "SuccessMessage" : (response.includes("Connect")) ? "ConnectingMessage" : "ErrorMessage"}>
+            <p>{response}</p>
           </div>
         )}
         <div className="Button">
-          <button onClick={ async () => {
-              setError(""); 
-              if (!selectedNetwork.SSID) {
-                setError("Please select a network.");
-                return;
-              }
-          
-              if (selectedNetwork.Security && !password) {
-                setError("Password is required for this network.");
-                return;
-              }
-          
-              try {
-                const response = await fetch('http://localhost:5000/addNetwork', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ selectedNetwork, password }),
-                });
-          
-                const result = await response.json();
-          
-                if (!response.ok) {
-                  setError("Failed to connect. Please try again.");
-                } else {
-                  console.log(result);
-                  setError("" ); 
-                }
-              } catch (error) {
-                console.error("Connection error:", error);
-                setError("Failed to connect. Please try again.");
-              }
-            }
-          }>Connect</button>
+          {next ? (
+            <button onClick={() => navigate("/")}>Next</button>
+          ) : (
+            <button onClick={handleConnect}>Connect</button>
+          )}
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
