@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../App.css";
 
 const WifiSetup = () => {
@@ -10,6 +10,12 @@ const WifiSetup = () => {
   const [response, setResponse] = useState("");
   const [next, setNext] = useState(false);
   const navigate = useNavigate();
+  const prevUUID = useLocation().state
+
+  useEffect(() => {
+    setResponse("")
+    setPassword("")
+  }, [selectedNetwork]);
 
   useEffect(() => {
     fetch('/networks')
@@ -17,7 +23,7 @@ const WifiSetup = () => {
       .then(data => {
         setwifi(data.networks);
         setConnectedNetworks(data.connectedNetworks);
-        console.log(data);
+        // console.log(data);
       });
   }, []);
 
@@ -28,41 +34,42 @@ const WifiSetup = () => {
     else return <img src="lowSignal.svg" />;
   };
 
-  const handleConnect = async () => {
+  const handleConnect = async(e) => {
+    e.preventDefault()
     setResponse("");
     if (!selectedNetwork.SSID) {
       setResponse("Please select a network.");
       return;
     }
-  
+
     if (selectedNetwork.Security && !password) {
       setResponse("Password is required for this network.");
       return;
     }
-  
+
     try {
       setResponse("Connecting...");
       const response = await fetch("http://localhost:5000/addNetwork", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ selectedNetwork, password }),
+        body: JSON.stringify({ prevUUID, selectedNetwork, password }),
       });
-  
+
       const result = await response.json();
       console.log(result);
-  
+
       if (response.ok && result.message.includes("Successfully connected")) {
         setResponse("Successfully Connected!");
         setNext(true);
       } else {
-        setResponse("Failed to connect. Please try again.");
+        setResponse(result.message);
       }
     } catch (error) {
       console.error("Connection error:", error);
-      setResponse("Failed to connect. Please try again.");
+      setResponse(`Failed to connect. Please try again! ${error}`);
     }
   };
-  
+
 
   return (
     <div className="Page">
@@ -108,12 +115,14 @@ const WifiSetup = () => {
         {selectedNetwork.Security && (
           <div className="Password">
             <p>Password:</p>
-            <input
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              type="password"
-              required
-            />
+            <form >
+              <input
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                type="password"
+                required
+              />
+            </form>
           </div>
         )}
         {response && (

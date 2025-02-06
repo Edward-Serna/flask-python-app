@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState  } from "react";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 
@@ -6,11 +6,12 @@ const Home = () => {
   const [username, setUsername] = useState("");
   const [machineName, setMachineName] = useState("");
   const [sshKey, setSshKey] = useState("");
-
+  const UUID = crypto.randomUUID();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    console.log(e)
+    // console.log(e)
+    // console.log(UUID)
     e.preventDefault();
 
     try {
@@ -19,13 +20,13 @@ const Home = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, machineName, sshKey }),
+        body: JSON.stringify({UUID, username, machineName, sshKey }),
       });
 
       if (response.ok) {
         const result = await response.json();
         console.log(result);
-        navigate("/WifiSetup");
+        navigate("/WifiSetup", {state: UUID});
       } else {
         console.error("Failed to add user");
       }

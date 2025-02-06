@@ -26,11 +26,13 @@ def save_users(users):
 @app.route("/addUser", methods=["POST"])
 def add_user():
     data = request.get_json()
+    print(data)
     if not data:
         return jsonify({"error": "Invalid request data"}), 400
 
     users = load_users()
     users.append({
+        "UUID": data.get("UUID"),
         "username": data.get("username"),
         "machineName": data.get("machineName"),
         "sshKey": data.get("sshKey"),
@@ -43,6 +45,7 @@ def add_user():
 def add_network():
     try:
         data = request.json
+        prevUUID = data.get("prevUUID")
         ssid = data.get("selectedNetwork", {}).get("SSID")
         password = data.get("password", "")
 
@@ -63,23 +66,22 @@ def add_network():
         if any(ssid in line for line in connection_check.stdout.strip().split("\n")):
             users = load_users()
 
-            if len(users) > 0:
-                new_network = {
-                    "SSID": ssid,
-                    "Security": data.get("selectedNetwork", {}).get("Security", "Unknown")
-                }
-                user = users[0] 
-                user['network'] = new_network
-                save_users(users)
+            for user in users:
+                if user.get("UUID") == prevUUID:
+                    user["network"] = {
+                        "SSID": ssid,
+                        "Security": data.get("selectedNetwork", {}).get("Security", "Unknown")
+                    }
+                    save_users(users)
+                    return jsonify({"message": f"Successfully connected to {ssid} and updated user."}), 200
 
-                return jsonify({"message": f"Successfully connected to {ssid} and added network."}), 200
-            else:
-                return jsonify({"message": "No users found to add network to."}), 400
-        else:
-            return jsonify({"message": "Failed to connect to the network, please check your credentials."}), 400
+            return jsonify({"message": "No matching user found for the given UUID."}), 400
+
+        return jsonify({"message": "Failed to connect to the network, please check your credentials."}), 400
 
     except subprocess.CalledProcessError as e:
-        return jsonify({"message": f"Error: {e.stderr}"}), 500
+        return jsonify({"message": f"{e.stderr}"}), 500
+
 
 @app.route("/networks", methods=["GET"])
 def networks():
