@@ -1,9 +1,8 @@
-<img src="./react-app/public/Modifly_Logo.svg" height="45"><br>
+<img src="./react-app/public/Modifly_Logo.svg" height="50"><br>
 # Getting Started Wizard
 Start up page using React as frontend and Flask for backend.
 
 ## Prerequisites
-### Linux
 ```bash
 sudo apt update
 ```
@@ -15,19 +14,12 @@ sudo apt install nodejs npm
 node -v
 npm -v
 ```
-### Windows
-Install [Node.js](https://nodejs.org/en/) <br/>
-The Node installation also installs NPM ([Node Page Manager](https://www.npmjs.com/))<br/>
-#### Verify: 
-```bash
-node -v
-npm -v
-```
+
 ## Flask (API Server)
-### Linux
 ```bash
 cd flask-server
 ```
+If no env available:
 ```bash
 python3 -m venv venv
 ```
@@ -35,44 +27,11 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 ```bash
-pip install flask python-dotenv
+pip install -r requirements.txt
 ```
-```bash
-pip install Flask-Cors
-```
-```bash
-pip install sdbus
-```
+Run Flask API:
 ```bash
 python3 server.py
-```
-or 
-```bash
-flask --app server run --debug
-```
-### Windows
-```bash 
-cd flask-server
-```
-Create a virtual environment to keep dependencies contained
-```bash 
-python -m venv venv
-```
-```bash
-venv\Scripts\activate
-```
-#### (Install dependencies)
-```bash
-pip install flask python-dotenv
-``` 
-```bash
-pip install Flask-Cors
-```
-```bash
-pip install sdbus
-```
-```bash
-python server.py
 ```
 or 
 ```bash
@@ -84,8 +43,14 @@ flask --app server run --debug
 cd react-flsk-app
 ```
 ```bash
-npm install
+npm install --force
 ```
 ```bash
 npm start
 ```
+### Build
+```bash
+npm run build
+serve -s build
+```
+
