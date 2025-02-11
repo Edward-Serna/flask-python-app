@@ -34,7 +34,7 @@ const WifiSetup = () => {
     else return <img src="lowSignal.svg" />;
   };
 
-  const handleConnect = async(e) => {
+  const handleConnect = async (e) => {
     e.preventDefault()
     setResponse("");
     if (!selectedNetwork.SSID) {
@@ -70,7 +70,6 @@ const WifiSetup = () => {
     }
   };
 
-
   return (
     <div className="Page">
       <img className="img" alt="logo" src="MF_Logo.svg" />
@@ -92,8 +91,8 @@ const WifiSetup = () => {
             {wifi.length > 0 ? (
               wifi.map((obj, index) => (
                 <div key={index}
-                  className={`Card2Item ${selectedNetwork.SSID === obj.SSID ? 'selected' : ''}`}
-                  onClick={() => setSelectedNetwork({ SSID: obj.SSID, Security: obj.Security })}>
+                  className={`Card2Item ${selectedNetwork == obj ? 'selected' : null}`}
+                  onClick={() => { setSelectedNetwork(obj) }}>
                   <div className="SSID">
                     <p>{obj.SSID}</p>
                     {obj.SSID && obj.Security ? <img src="lock-closed.svg" /> : null}
@@ -120,13 +119,19 @@ const WifiSetup = () => {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 type="password"
+                autoComplete="WifiPassAuto"
                 required
               />
             </form>
           </div>
         )}
         {response && (
-          <div className={(response.includes("Success")) ? "SuccessMessage" : (response.includes("Connect")) ? "ConnectingMessage" : "ErrorMessage"}>
+          <div className={
+            (response.includes("Success"))
+              ? "SuccessMessage"
+              : (response.includes("Connect"))
+                ? "ConnectingMessage"
+                : "ErrorMessage"}>
             <p>{response}</p>
           </div>
         )}
