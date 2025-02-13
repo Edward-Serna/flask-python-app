@@ -150,8 +150,9 @@
 .Button {
   display: flex; 
   align-self: flex-end;
+  align-items: center;
   justify-self: end;
-  justify-content: end;
+  justify-content: center;
   bottom: 50px;
 }
 
@@ -164,39 +165,57 @@
   width: 75px;
 }
 
-.Password {
+.popup-content{
+  width: fit-content !important;
+  color: white;
+  background-color: var(--Card2-Fill) !important;
+  border: 1px solid var(--Card2-Stroke);
+  border-radius: 5px;
+  padding: 10px !important;
+  width: 400px !important;
+
+}
+
+.PasswordArea {
   display: flex;
-  width: 100%;
+  flex-direction: column;
   margin-bottom: 5px;
 }
 
-.Password form {
+.PasswordArea form {
   display: flex;
+  width: 100%;
+  flex-direction: column;
   width: 100%;
 }
 
-.Password form input {
-  height: auto;
-  width: 100%;
+.PasswordArea form input {
+  height: fit-content;
   padding: 4px;
   color: #F2F2F2;
   background-color: var(--Input-Fill);
   border: 1px solid var(--Input-Stroke);
   border-radius: 3px;
   margin-left: 5px;
+  margin-bottom: 5px;
+
 }
 
 .ErrorMessage {
   display: flex;
   justify-content: center;
   color: rgb(250, 103, 103);
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px;
 }
 
 .SuccessMessage{
   display: flex;
   justify-content: center;
-  color: rgb(91, 238, 98);
+  color: rgb(97, 231, 104);
+  padding: 5px;
+  font-size: 14px;
   /* font-weight: normal; */
 }
 
@@ -204,4 +223,6 @@
   display: flex;
   justify-content: center;
   color: rgb(190, 190, 190);
+  font-size: 14px;
+  padding: 5px;
 }
