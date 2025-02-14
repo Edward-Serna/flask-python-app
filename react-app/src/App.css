@@ -154,6 +154,8 @@
   justify-self: end;
   justify-content: center;
   bottom: 50px;
+  gap: 5px;
+  margin-top: 0px;
 }
 
 .Button button{
@@ -168,18 +170,20 @@
 .popup-content{
   width: fit-content !important;
   color: white;
-  background-color: var(--Card2-Fill) !important;
-  border: 1px solid var(--Card2-Stroke);
-  border-radius: 5px;
+  background-color: var(--Card3-Fill) !important;
+  border: 1px solid var(--Card3-Stroke) !important;
+  border-radius: 8px;
   padding: 10px !important;
-  width: 400px !important;
+  width: 85% !important;
+  max-width: 400px !important;
 
 }
 
 .PasswordArea {
   display: flex;
   flex-direction: column;
-  margin-bottom: 5px;
+  font-weight: 600;
+  margin-bottom: 15px;
 }
 
 .PasswordArea form {
@@ -196,9 +200,11 @@
   background-color: var(--Input-Fill);
   border: 1px solid var(--Input-Stroke);
   border-radius: 3px;
-  margin-left: 5px;
-  margin-bottom: 5px;
+}
 
+.PasswordArea  input:focus {
+  border: 1px solid #b8b8b8;
+  outline: unset;
 }
 
 .ErrorMessage {
@@ -207,7 +213,8 @@
   color: rgb(250, 103, 103);
   font-size: 14px;
   font-weight: 500;
-  padding: 5px;
+  padding: 0px;
+  margin: 0px;
 }
 
 .SuccessMessage{

@@ -26,14 +26,8 @@ const WifiSetup = () => {
       .then(res => res.json())
       .then(data => {
         setwifi(data.networks);
-        setConnectedNetworks(prevConnected => {
-          const newNetworks = data.connectedNetworks.filter(
-            newNet => !prevConnected.some(existingNet => existingNet.SSID === newNet.SSID)
-          );
-          return [...prevConnected, ...newNetworks];
-        });
+        setConnectedNetworks(data.connectedNetworks);
         console.log(data.connectedNetworks);
-        console.log(connectedNetworks);
       });
   }, [next]);
 
@@ -105,7 +99,6 @@ const WifiSetup = () => {
         )}
         {(!next && connectedNetworks.length <= REQUIRED_NETWORK_COUNT) &&
           <>
-            {console.log(connectedNetworks.length)}
             <h3>Available Networks</h3>
             <div className="CardItem">
               <div className="Card2">
@@ -153,7 +146,7 @@ const WifiSetup = () => {
                     : (response.includes("Connect"))
                       ? "ConnectingMessage"
                       : "ErrorMessage"}>
-                  <p>{response}</p>
+                  <p style={{margin: '0px', marginBottom: '10px'}}>{response}</p>
                 </div>
               )}
               <div className="Button">

@@ -20,6 +20,9 @@
   --Card2-Fill-Hover: #505057;
   --Card2-Stroke: #ADADAD;
 
+  --Card3-Fill: var(--Dark-700);
+  --Card3-Stroke: #919191;
+
   --Input-Fill: #484851;
   --Input-Stroke: #999898;
 

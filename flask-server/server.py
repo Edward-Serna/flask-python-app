@@ -26,7 +26,6 @@ def save_users(users):
 @app.route("/addUser", methods=["POST"])
 def add_user():
     data = request.get_json()
-    print(data)
     if not data:
         return jsonify({"error": "Invalid request data"}), 400
 
@@ -113,12 +112,29 @@ def networks():
             parts = line.split(":")
             if len(parts) >= 3 and parts[2].strip() == "yes":
                 connected_networks.append({"SSID": parts[0].strip(), "Device": parts[1].strip()})
-
+        
+        
+        users = load_users()
+        wireless_network = {}
+        for network in connected_networks:
+            if (network['Device'] == 'wlan0'):
+                wireless_network = network
+                for user in users:
+                    if user.get("UUID") == prevUUID:
+                        user["network"] = {
+                            "SSID": ssid,
+                            "Security": data.get("selectedNetwork", {}).get("Security", "Unknown")
+                        }
+                        save_users(users)
+                break
+            
+        print(wireless_network)
+        
+        
         return jsonify({"networks": networks, "connectedNetworks": connected_networks}), 200
 
     except subprocess.CalledProcessError as e:
         return jsonify({"error": f"Failed to fetch networks: {e.stderr}"}), 400
-
 
 if __name__ == "__main__":
     app.run(debug=True)
