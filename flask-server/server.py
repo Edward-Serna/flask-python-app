@@ -112,25 +112,22 @@ def networks():
             parts = line.split(":")
             if len(parts) >= 3 and parts[2].strip() == "yes":
                 connected_networks.append({"SSID": parts[0].strip(), "Device": parts[1].strip()})
-        
-        
+
         users = load_users()
-        wireless_network = {}
+        prevUUID = request.args.get("prevUUID")
+
         for network in connected_networks:
-            if (network['Device'] == 'wlan0'):
-                wireless_network = network
+            if network["Device"] == "wlan0":
                 for user in users:
                     if user.get("UUID") == prevUUID:
                         user["network"] = {
-                            "SSID": ssid,
-                            "Security": data.get("selectedNetwork", {}).get("Security", "Unknown")
+                            "SSID": network["SSID"],
+                            "Security": "Unknown" 
                         }
                         save_users(users)
+                        break
                 break
-            
-        print(wireless_network)
-        
-        
+
         return jsonify({"networks": networks, "connectedNetworks": connected_networks}), 200
 
     except subprocess.CalledProcessError as e:

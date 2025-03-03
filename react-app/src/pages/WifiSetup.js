@@ -22,14 +22,23 @@ const WifiSetup = () => {
   }, [selectedNetwork]);
 
   useEffect(() => {
-    fetch('/networks')
-      .then(res => res.json())
-      .then(data => {
+    fetch('http://localhost:5000/networks')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); 
+      })
+      .then(data => { 
         setwifi(data.networks);
         setConnectedNetworks(data.connectedNetworks);
         console.log(data.connectedNetworks);
+      })
+      .catch(error => {
+        console.error("Error fetching networks:", error);
       });
   }, [next]);
+  
 
   const signalIcon = (sig_percent) => {
     if (sig_percent > 75) return <img src="perfectSignal.svg" />;
