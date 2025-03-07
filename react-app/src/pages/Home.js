@@ -6,7 +6,8 @@ const Home = () => {
   const [username, setUsername] = useState("");
   const [machineName, setMachineName] = useState("");
   const [sshKey, setSshKey] = useState("");
-  const UUID = crypto.randomUUID();
+  const UUID = window.crypto?.randomUUID ? window.crypto.randomUUID() : "fallback-uuid";
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
