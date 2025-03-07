@@ -9,7 +9,7 @@ sudo apt update
 ```bash
 sudo apt install nodejs npm
 ```
-#### Verify: 
+#### Verify
 ```bash
 node -v
 npm -v
@@ -58,3 +58,4 @@ serve -s build
 * https://www.freecodecamp.org/news/how-to-build-a-web-application-using-flask-and-deploy-it-to-the-cloud-3551c985e492/
 * https://auth0.com/blog/developing-restful-apis-with-python-and-flask/
 * https://react.dev/
+  
