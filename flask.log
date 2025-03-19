@@ -6,3 +6,8 @@
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 392-492-869
+127.0.0.1 - - [19/Mar/2025 17:02:20] "OPTIONS /addUser HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2025 17:02:24] "POST /addUser HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2025 17:02:24] "POST /addUser HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2025 17:02:25] "GET /networks HTTP/1.1" 200 -
+127.0.0.1 - - [19/Mar/2025 17:02:25] "GET /networks HTTP/1.1" 200 -

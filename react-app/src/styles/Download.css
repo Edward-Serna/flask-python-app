@@ -1,0 +1,71 @@
+.DownloadCard {
+  background-color: var(--Card-Fill);
+  border: 1px solid var(--Card-Stroke);
+  border-radius: 10px;
+  height: 200px;
+  width: 60%;
+  max-width: 450px;
+  /* max-height: 600px; */
+  /* max-width: 1000px; */
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-bottom: 10px;
+  box-shadow: 0px 0px 20px #0000005d;
+}
+
+.DownloadCard h2 {
+  margin: 0px;
+  margin-bottom: 10px;
+}
+
+.DownloadCard p{
+  font-weight: 400;
+  font-size: 17px;
+  margin-bottom: 15px;
+
+
+}
+
+.Body{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.Buttons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.DownloadButton{
+  background-color: var(--Button-Fill);
+  border: 1px solid var(--Button-Stroke);
+  border-radius: 5px;
+  font-size: medium;
+  color: white;
+  height: 30px;
+  width: 200px;
+}
+
+.DownloadButton:hover{
+  background-color: #3e92ff;
+}
+
+.SettingsButton{
+  background-color: var(--Dark-700);
+  border: 1px solid var(--Dark-600);
+  border-radius: 5px;
+  font-size: medium;
+  color: white;
+  height: 30px;
+  width: 75px;
+}
+
+.SettingsButton:hover{
+  background-color: var(--Dark-600);
+}

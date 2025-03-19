@@ -179,7 +179,7 @@ const WifiSetup = () => {
         {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) && <p className="SuccessMessage">Successfully Connected</p>}
         <div className="Button">
           {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) ? (
-            <button onClick={() => navigate("/")}>Next</button>
+            <button onClick={() => navigate("/Download")}>Next</button>
           ) : (
             <button onClick={handleConnect}>Connect</button>
           )}
