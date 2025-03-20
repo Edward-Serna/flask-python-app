@@ -13,3 +13,5 @@ export default class APIService {
 	}
 
 }
+
+// NOT used right now. Will migrate all API functions here later
