@@ -1,14 +1,15 @@
-import React, { useState  } from "react";
-import { useNavigate } from "react-router-dom";
-import "../App.css";
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import './styles/home.css';
 
 const Home = () => {
   const [username, setUsername] = useState("");
   const [machineName, setMachineName] = useState("");
   const [sshKey, setSshKey] = useState("");
-  const UUID = window.crypto?.randomUUID ? window.crypto.randomUUID() : "fallback-uuid";
+  const UUID = crypto.randomUUID();
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     // console.log(e)
@@ -27,9 +28,9 @@ const Home = () => {
       if (response.ok) {
         const result = await response.json();
         console.log(result);
-        navigate("/WifiSetup", {state: UUID});
+        router.push(`./WifiSetup`);
       } else {
-        console.error("Failed to add user");
+        console.log("Failed to add user");
       }
     } catch (err) {
       console.error("Error:", err);
@@ -37,9 +38,9 @@ const Home = () => {
   };
 
   return (
-    <div className="Page">
-      <img className="img" alt="logo" src="MF_Logo.svg" />
-      <div className="Card">
+    <div className={"Page"}>
+      <Image src="/logo.svg" width={100} height={100} alt="Logo" />
+      <div className={"Card"}>
         <h2>Welcome</h2>
         <p>
           Please complete these steps blah blah blah explanation about this
@@ -47,10 +48,10 @@ const Home = () => {
         </p>
       </div>
 
-      <div className="Card">
+      <div className={"Card"}>
         <h2>First Time Setup</h2>
         <form onSubmit={handleSubmit}>
-          <div className="CardItem">
+          <div className={"CardItem"}>
             <p>Username: </p>
             <input
               value={username}
@@ -59,7 +60,7 @@ const Home = () => {
               required
             />
           </div>
-          <div className="CardItem">
+          <div className={"CardItem"}>
             <p>Machine Name: </p>
             <input
               value={machineName}
@@ -68,7 +69,7 @@ const Home = () => {
               required
             />
           </div>
-          <div className="LargeInput">
+          <div className={"LargeInput"}>
             <p>SSH Key: </p>
             <textarea
               type="text"
@@ -78,7 +79,7 @@ const Home = () => {
               required
             />
           </div>
-        <div className="Button">
+        <div className={"Button"}>
           <button type="submit">Next</button>
         </div>
         </form>

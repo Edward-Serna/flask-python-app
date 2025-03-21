@@ -24,9 +24,9 @@ yarn-error.log*
 flask-server/venv
 flask-server/users.json
 flask-server/__pycache__
-react-app/build
-react-app/node_modules
-react-app/package-lock.json
+react-app-next/build
+react-app-next/node_modules
+react-app-next/package-lock.json
 
 flask.log
 react.log

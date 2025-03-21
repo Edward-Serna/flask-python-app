@@ -5,12 +5,11 @@ import "../styles/Download.css";
 const DownloadPage = () => {
 
   return (
-    <div className="Page">
-      <img className="img" alt="logo" src="MF_Logo.svg" />
-      <div className="DownloadCard">
-        <h2>Next Steps</h2>
+    <div class="Page">
+      <img class="img" alt="logo" src="MF_Logo.svg" />
+      <div class="DownloadCard">
         <div class="Body">
-        <p>Download Modifly today!</p>
+        <h3>Download the Modifly Software today!</h3>
         <div class="Buttons">
           <button class="DownloadButton" type="submit">Download</button>
           <button Class="SettingsButton" type="submit">Settings</button>

@@ -51,11 +51,11 @@ def add_network():
         if not ssid:
             return jsonify({"message": "No network selected"}), 400
 
-        result = subprocess.run(
-            ["sudo", "nmcli", "device", "wifi", "connect", ssid, "password", password] if password else
-            ["sudo", "nmcli", "device", "wifi", "connect", ssid],
-            capture_output=True, text=True, check=True
-        )
+        # result = subprocess.run(
+        #     ["sudo", "nmcli", "device", "wifi", "connect", ssid, "password", password] if password else
+        #     ["sudo", "nmcli", "device", "wifi", "connect", ssid],
+        #     capture_output=True, text=True, check=True
+        # )
 
         connection_check = subprocess.run(
             ["nmcli", "-t", "-f", "NAME,DEVICE,ACTIVE", "connection", "show", "--active"],

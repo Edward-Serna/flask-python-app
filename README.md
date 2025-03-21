@@ -2,9 +2,10 @@
 # Getting Started Wizard
 Start up page using React as frontend and Flask for backend.
 
-## Prerequisites
+## Prerequisites [Linux]
 ```bash
-sudo apt update
+sudo apt-get update
+sudo apt-get upgrade
 ```
 ```bash
 # Download and install fnm:
@@ -65,4 +66,4 @@ serve -s build
 * https://www.freecodecamp.org/news/how-to-build-a-web-application-using-flask-and-deploy-it-to-the-cloud-3551c985e492/
 * https://auth0.com/blog/developing-restful-apis-with-python-and-flask/
 * https://react.dev/
-  
+* https://medium.com/@ahmetfurkandemir/deploy-the-python-flask-website-f43fcc5f2c80

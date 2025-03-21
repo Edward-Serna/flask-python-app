@@ -1,0 +1,30 @@
+.mainpage {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  margin: 40px;
+  justify-content: center;
+  overflow-y: auto;
+  
+}
+.contentArea{
+  max-height: 100%;
+  width: 100%;
+  align-self: flex-start;
+  color: rgb(255, 71, 71);
+}
+
+.img {
+  width: fit-content;
+  justify-self: left;
+}
+
+.content {
+  width: fit-content;
+
+}
+
+.msg {
+  font-weight: 500;
+  -webkit-text-fill-color: var(--text-color-2);
+}

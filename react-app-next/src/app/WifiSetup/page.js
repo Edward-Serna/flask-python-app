@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-import "../App.css";
+import '../styles/home.css';
 
 const WifiSetup = () => {
   const [wifi, setwifi] = useState([]);
@@ -12,7 +14,9 @@ const WifiSetup = () => {
   const [response, setResponse] = useState("");
   const [next, setNext] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
+
+  // const navigate = useNavigate();
   const prevUUID = useLocation().state
   const REQUIRED_NETWORK_COUNT = 1 // Starting val 0
 
@@ -92,9 +96,9 @@ const WifiSetup = () => {
   };
 
   return (
-    <div className="Page">
-      <img className="img" alt="logo" src="MF_Logo.svg" />
-      <div className="Card">
+    <div class="Page">
+      <Image src="/logo.svg" width={100} height={100} alt="Logo" />
+      <div class="Card">
         <h2>Wireless Networks</h2>
         {connectedNetworks.length > 0 && (
           <div style={{ marginBottom: "10px" }}>
@@ -109,15 +113,15 @@ const WifiSetup = () => {
         {(!next && connectedNetworks.length <= REQUIRED_NETWORK_COUNT) &&
           <>
             <h3>Available Networks</h3>
-            <div className="CardItem">
-              <div className="Card2">
+            <div class="CardItem">
+              <div class="Card2">
                 {wifi.length > 0 ? (
                   wifi.map((obj, index) => (
                     <div key={index}
-                      className={`Card2Item ${selectedNetwork == obj ? 'selected' : null}`}
+                      class={`Card2Item ${selectedNetwork == obj ? 'selected' : null}`}
                       onClick={() => handleSelect(obj)}
                     >
-                      <div className="SSID">
+                      <div class="SSID">
                         <p>{obj.SSID}</p>
                         {obj.SSID && obj.Security ? <img src="lock-closed.svg" /> : null}
                       </div>
@@ -129,14 +133,14 @@ const WifiSetup = () => {
                     </div>
                   ))
                 ) : (
-                  <div className="Card2Item">
+                  <div class="Card2Item">
                     <p>Loading Networks...</p>
                   </div>
                 )}
               </div>
             </div>
             <Popup open={popupOpen} onClose={() => setPopupOpen(false)} modal nested>
-              <div className="PasswordArea">
+              <div class="PasswordArea">
                 <p>Password for {selectedNetwork.SSID}:</p>
                 <form onSubmit={handleConnect}>
                   <input
@@ -149,7 +153,7 @@ const WifiSetup = () => {
                 </form>
               </div>
               {response && (
-                <div className={
+                <div class={
                   (response.includes("Success"))
                     ? "SuccessMessage"
                     : (response.includes("Connect"))
@@ -158,14 +162,14 @@ const WifiSetup = () => {
                   <p style={{margin: '0px', marginBottom: '10px'}}>{response}</p>
                 </div>
               )}
-              <div className="Button">
+              <div class="Button">
                 <button onClick={handleConnect}>Connect</button>
                 <button type="button" onClick={() => setPopupOpen(false)}>Cancel</button>
               </div>
             </Popup>
 
             {response && !selectedNetwork.Security && (
-              <div className={
+              <div class={
                 (response.includes("Success"))
                   ? "SuccessMessage"
                   : (response.includes("Connect"))
@@ -176,8 +180,8 @@ const WifiSetup = () => {
             )}
 
           </>}
-        {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) && <p className="SuccessMessage">Successfully Connected</p>}
-        <div className="Button">
+        {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) && <p class="SuccessMessage">Successfully Connected</p>}
+        <div class="Button">
           {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) ? (
             <button onClick={() => navigate("/Download")}>Next</button>
           ) : (
