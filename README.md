@@ -6,10 +6,18 @@ Start up page using React as frontend and Flask for backend.
 ```bash
 sudo apt-get update
 sudo apt-get upgrade
+sudo apt install python3.12-venv
+sudo apt install python3-pip
+sudo pip3 install flask-restful 
 ```
+
 ```bash
 # Download and install fnm:
 curl -o- https://fnm.vercel.app/install | bash
+
+# OR
+sudo apt install nodejs
+
 # Download and install Node.js:
 fnm install 23
 # Verify the Node.js version:
@@ -17,19 +25,18 @@ node -v # Should print "v23.10.0".
 # Verify npm version:
 npm -v # Should print "10.9.2".
 ```
-#### Verify
-```bash
-node -v
-npm -v
-```
 
 ## Flask (API Server)
 ```bash
 cd flask-server
 ```
 If no env available:
+`` bash
+sudo pip3 install flask-restful 
+```
+
 ```bash
-python3 -m venv venv
+sudo python3 -m venv venv
 ```
 ```bash
 source venv/bin/activate

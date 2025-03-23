@@ -13,13 +13,14 @@ sudo pkill -f "npm.*start"
 # Wait for processes to terminate
 sleep 2
 
+
 echo "Starting Flask API..."
-cd /home/usl/Wizard/flask-python-app/flask-server || exit
+cd ~/Wizard/flask-python-app/flask-server || exit
 source venv/bin/activate
-nohup python3 server.py > /home/usl/Wizard/flask-python-app/.Logs/flask.log 2>&1 &
+nohup python3 server.py > ~/Wizard/flask-python-app/.Logs/flask.log 2>&1 &
 
 echo "Starting Next.js app..."
-cd /home/usl/Wizard/flask-python-app/react-app-next || exit
-nohup npm run dev > /home/usl/Wizard/flask-python-app/.Logs/react.log 2>&1 &
+cd ~/Wizard/flask-python-app/react-app-next || exit
+npm run dev > ~/Wizard/flask-python-app/.Logs/react.log 2>&1 &
 
-echo "Startup script executed successfully."
+echo "Startup script executed successfully!"
