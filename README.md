@@ -35,7 +35,7 @@ If no env available:
 sudo pip3 install flask-restful 
 ```
 
-```bash
+``` bash
 sudo python3 -m venv venv
 ```
 ```bash
