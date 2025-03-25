@@ -31,7 +31,7 @@ npm -v # Should print "10.9.2".
 cd flask-server
 ```
 If no env available:
-`` bash
+```bash
 sudo pip3 install flask-restful 
 ```
 
