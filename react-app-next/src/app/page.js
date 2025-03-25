@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation'
+import Image from "next/image";
 import './styles/home.css';
 
 const Home = () => {
@@ -8,8 +9,7 @@ const Home = () => {
   const [machineName, setMachineName] = useState("");
   const [sshKey, setSshKey] = useState("");
   const UUID = crypto.randomUUID();
-
-  const router = useRouter();
+  const router = useRouter()
 
   const handleSubmit = async (e) => {
     // console.log(e)
@@ -28,7 +28,7 @@ const Home = () => {
       if (response.ok) {
         const result = await response.json();
         console.log(result);
-        router.push(`./WifiSetup`);
+        router.push('/WifiSetup');
       } else {
         console.log("Failed to add user");
       }
@@ -39,7 +39,7 @@ const Home = () => {
 
   return (
     <div className={"Page"}>
-      <Image src="/logo.svg" width={100} height={100} alt="Logo" />
+      <Image src="MF_Logo.svg" width={300} height={100} alt="Logo" />
       <div className={"Card"}>
         <h2>Welcome</h2>
         <p>

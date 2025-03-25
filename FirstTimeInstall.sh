@@ -3,7 +3,7 @@
 echo "Updating System..."
 sudo apt-get update -y
 sudo apt-get upgrade -y
-sudo apt install python3-pip python3.12-venv
+sudo apt install python3-pip python3.12-venv -y
 
 echo "Setting up the API..."
 sudo pip3 install flask-restful 
@@ -20,8 +20,9 @@ npm install
 cd ..
 
 echo "Creating the Logs..."
-mkdir .Logs
-touch ./Logs/flask.log
-touch ./Logs/react.log
+mkdir .Logs && cd .Logs
+touch flask.log
+touch react.log
+cd ..
 
 echo "Sucessfully Installed Repo!!"
