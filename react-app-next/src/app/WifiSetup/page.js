@@ -1,25 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from 'next/navigation';
-
+import { useRouter } from 'next/navigation';
 import Popup from 'reactjs-popup';
 import Image from "next/image";
 import 'reactjs-popup/dist/index.css';
 import '../styles/home.css';
 
 const WifiSetup = () => {
-  const [wifi, setwifi] = useState([]);
+  const [wifi, setWifi] = useState([]);
   const [connectedNetworks, setConnectedNetworks] = useState([]);
-  const [selectedNetwork, setSelectedNetwork] = useState({});
+  const [selectedNetwork, setSelectedNetwork] = useState(null);
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
   const [next, setNext] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
 
-  const router = useRouter(); 
-  const prevUUID = usePathname(); 
-
+  const router = useRouter();
   const REQUIRED_NETWORK_COUNT = 1;
 
   useEffect(() => {
@@ -28,14 +25,20 @@ const WifiSetup = () => {
   }, [selectedNetwork]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/networks')
+    fetch('http://192.168.1.107:5000/networks')
       .then(response => response.json())
-      .then(data => { 
-        setwifi(data.networks);
-        setConnectedNetworks(data.connectedNetworks);
+      .then(data => {
+        setWifi(data.networks || []);
+        setConnectedNetworks(data.connectedNetworks || []);
       })
       .catch(error => console.error("Error fetching networks:", error));
   }, [next]);
+
+  const signalIcon = (sigPercent) => {
+    if (sigPercent > 75) return <img src="perfectSignal.svg" alt="Strong Signal" />;
+    if (sigPercent > 50) return <img src="goodSignal.svg" alt="Good Signal" />;
+    return <img src="lowSignal.svg" alt="Weak Signal" />;
+  };
 
   const handleSelect = (network) => {
     setSelectedNetwork(network);
@@ -46,7 +49,7 @@ const WifiSetup = () => {
     e.preventDefault();
     setResponse("");
 
-    if (!selectedNetwork.SSID) {
+    if (!selectedNetwork?.SSID) {
       setResponse("Please select a network.");
       return;
     }
@@ -58,10 +61,10 @@ const WifiSetup = () => {
 
     try {
       setResponse("Connecting...");
-      const response = await fetch("http://localhost:5000/addNetwork", {
+      const response = await fetch("http://192.168.1.107:5000/addNetwork", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prevUUID, selectedNetwork, password }),
+        body: JSON.stringify({ selectedNetwork, password }),
       });
 
       const result = await response.json();
@@ -77,11 +80,12 @@ const WifiSetup = () => {
     }
   };
 
-  return(
+  return (
     <div className="Page">
       <Image src="MF_Logo.svg" width={300} height={100} alt="Logo" />
       <div className="Card">
         <h2>Wireless Networks</h2>
+        
         {connectedNetworks.length > 0 && (
           <div style={{ marginBottom: "10px" }}>
             <h3>Connected Networks</h3>
@@ -92,26 +96,24 @@ const WifiSetup = () => {
             ))}
           </div>
         )}
-        {(!next && connectedNetworks.length <= REQUIRED_NETWORK_COUNT) &&
+
+        {(!next && connectedNetworks.length <= REQUIRED_NETWORK_COUNT) && (
           <>
             <h3>Available Networks</h3>
             <div className="CardItem">
               <div className="Card2">
                 {wifi.length > 0 ? (
                   wifi.map((obj, index) => (
-                    <div key={index}
-                    className={`Card2Item ${selectedNetwork == obj ? 'selected' : null}`}
+                    <div 
+                      key={index}
+                      className={`Card2Item ${selectedNetwork === obj ? 'selected' : ''}`}
                       onClick={() => handleSelect(obj)}
                     >
                       <div className="SSID">
                         <p>{obj.SSID}</p>
-                        {obj.SSID && obj.Security ? <img src="lock-closed.svg" /> : null}
+                        {obj.Security ? <img src="lock-closed.svg" alt="Secured" /> : null}
                       </div>
-                      <p>{obj.SSID && !obj.Signal_Percent ? (
-                        <img src="perfectSignal.svg" />
-                      ) : (
-                        signalIcon(obj.Signal_Percent)
-                      )}</p>
+                      <p>{obj.Signal_Percent ? signalIcon(obj.Signal_Percent) : <img src="perfectSignal.svg" alt="Signal" />}</p>
                     </div>
                   ))
                 ) : (
@@ -121,48 +123,51 @@ const WifiSetup = () => {
                 )}
               </div>
             </div>
+
             <Popup open={popupOpen} onClose={() => setPopupOpen(false)} modal nested>
               <div className="PasswordArea">
-                <p>Password for {selectedNetwork.SSID}:</p>
+                <p>Password for {selectedNetwork?.SSID}:</p>
                 <form onSubmit={handleConnect}>
                   <input
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     type="password"
-                    autoComplete="WifiPassAuto"
+                    autoComplete="off"
                     required
                   />
                 </form>
               </div>
+
               {response && (
                 <div className={
-                  (response.includes("Success"))
-                    ? "SuccessMessage"
-                    : (response.includes("Connect"))
-                      ? "ConnectingMessage"
-                      : "ErrorMessage"}>
-                  <p style={{margin: '0px', marginBottom: '10px'}}>{response}</p>
+                  response.includes("Success") ? "SuccessMessage" :
+                  response.includes("Connect") ? "ConnectingMessage" :
+                  "ErrorMessage"
+                }>
+                  <p style={{ margin: '0px', marginBottom: '10px' }}>{response}</p>
                 </div>
               )}
+
               <div className="Button">
                 <button onClick={handleConnect}>Connect</button>
                 <button type="button" onClick={() => setPopupOpen(false)}>Cancel</button>
               </div>
             </Popup>
 
-            {response && !selectedNetwork.Security && (
+            {response && !selectedNetwork?.Security && (
               <div className={
-                (response.includes("Success"))
-                  ? "SuccessMessage"
-                  : (response.includes("Connect"))
-                    ? "ConnectingMessage"
-                    : "ErrorMessage"}>
+                response.includes("Success") ? "SuccessMessage" :
+                response.includes("Connect") ? "ConnectingMessage" :
+                "ErrorMessage"
+              }>
                 <p>{response}</p>
               </div>
             )}
+          </>
+        )}
 
-          </>}
         {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) && <p className="SuccessMessage">Successfully Connected</p>}
+
         <div className="Button">
           {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) ? (
             <button onClick={() => router.push('/Download')}>Next</button>
@@ -171,7 +176,7 @@ const WifiSetup = () => {
           )}
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

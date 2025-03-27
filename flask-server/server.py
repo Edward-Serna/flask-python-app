@@ -3,6 +3,7 @@ from flask_cors import CORS
 import json
 import os
 import subprocess
+import uuid 
 
 app = Flask(__name__)
 CORS(app)
@@ -31,7 +32,7 @@ def add_user():
 
     users = load_users()
     users.append({
-        "UUID": data.get("UUID"),
+        "UUID": str(uuid.uuid4()),
         "username": data.get("username"),
         "machineName": data.get("machineName"),
         "sshKey": data.get("sshKey"),
@@ -39,6 +40,7 @@ def add_user():
     save_users(users)
 
     return jsonify({"message": "User added successfully!", "users": users}), 200
+
 
 @app.route("/addNetwork", methods=["POST"])
 def add_network():
@@ -51,32 +53,23 @@ def add_network():
         if not ssid:
             return jsonify({"message": "No network selected"}), 400
 
-        # result = subprocess.run(
-        #     ["sudo", "nmcli", "device", "wifi", "connect", ssid, "password", password] if password else
-        #     ["sudo", "nmcli", "device", "wifi", "connect", ssid],
-        #     capture_output=True, text=True, check=True
-        # )
+         # Connect to Wi-Fi
+        cmd = ["sudo", "nmcli", "device", "wifi", "connect", ssid]
+        if password:
+            cmd.extend(["password", password])
+        
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
 
+        # Verify connection
         connection_check = subprocess.run(
             ["nmcli", "-t", "-f", "NAME,DEVICE,ACTIVE", "connection", "show", "--active"],
             capture_output=True, text=True, check=True
         )
 
         if any(ssid in line for line in connection_check.stdout.strip().split("\n")):
-            users = load_users()
+            return jsonify({"message": f"Successfully connected to {ssid}."}), 200
 
-            for user in users:
-                if user.get("UUID") == prevUUID:
-                    user["network"] = {
-                        "SSID": ssid,
-                        "Security": data.get("selectedNetwork", {}).get("Security", "Unknown")
-                    }
-                    save_users(users)
-                    return jsonify({"message": f"Successfully connected to {ssid} and updated user."}), 200
-
-            return jsonify({"message": "No matching user found for the given UUID."}), 400
-
-        return jsonify({"message": "Failed to connect to the network, please check your credentials."}), 400
+        return jsonify({"message": "Failed to connect to the network. Check credentials."}), 400
 
     except subprocess.CalledProcessError as e:
         return jsonify({"message": f"{e.stderr}"}), 500

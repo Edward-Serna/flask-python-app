@@ -11,7 +11,7 @@ sleep 2
 echo "Starting Flask API..."
 cd ~/Wizard/flask-python-app/flask-server || exit
 source venv/bin/activate
-nohup python3 server.py > ~/Wizard/flask-python-app/.Logs/flask.log 2>&1 &
+nohup flask run --host=192.168.1.107 --port=5000 > ~/Wizard/flask-python-app/.Logs/flask.log 2>&1 &
 
 echo "Starting Next.js app..."
 cd ~/Wizard/flask-python-app/react-app-next || exit

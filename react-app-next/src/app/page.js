@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import './styles/home.css';
 
@@ -8,21 +8,18 @@ const Home = () => {
   const [username, setUsername] = useState("");
   const [machineName, setMachineName] = useState("");
   const [sshKey, setSshKey] = useState("");
-  const UUID = crypto.randomUUID();
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
-    // console.log(e)
-    // console.log(UUID)
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/addUser", {
+      const response = await fetch("http://192.168.1.107:5000/addUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({UUID, username, machineName, sshKey }),
+        body: JSON.stringify({ username, machineName, sshKey }),
       });
 
       if (response.ok) {
@@ -38,20 +35,17 @@ const Home = () => {
   };
 
   return (
-    <div className={"Page"}>
+    <div className="Page">
       <Image src="MF_Logo.svg" width={300} height={100} alt="Logo" />
-      <div className={"Card"}>
+      <div className="Card">
         <h2>Welcome</h2>
-        <p>
-          Please complete these steps blah blah blah explanation about this
-          current set of fields that they need to fill out blah blah blah
-        </p>
+        <p>Please complete the setup.</p>
       </div>
 
-      <div className={"Card"}>
+      <div className="Card">
         <h2>First Time Setup</h2>
         <form onSubmit={handleSubmit}>
-          <div className={"CardItem"}>
+          <div className="CardItem">
             <p>Username: </p>
             <input
               value={username}
@@ -60,7 +54,7 @@ const Home = () => {
               required
             />
           </div>
-          <div className={"CardItem"}>
+          <div className="CardItem">
             <p>Machine Name: </p>
             <input
               value={machineName}
@@ -69,19 +63,18 @@ const Home = () => {
               required
             />
           </div>
-          <div className={"LargeInput"}>
+          <div className="LargeInput">
             <p>SSH Key: </p>
             <textarea
-              type="text"
               value={sshKey}
               onChange={(event) => setSshKey(event.target.value)}
               placeholder="Begins with ‘ssh-rsa’, ‘ecdsa-sha2-nistp256’, etc."
               required
             />
           </div>
-        <div className={"Button"}>
-          <button type="submit">Next</button>
-        </div>
+          <div className="Button">
+            <button type="submit">Next</button>
+          </div>
         </form>
       </div>
     </div>
