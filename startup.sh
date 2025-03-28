@@ -18,3 +18,5 @@ cd ~/Wizard/flask-python-app/react-app-next || exit
 npm run dev > ~/Wizard/flask-python-app/.Logs/react.log 2>&1 &
 
 echo "Startup script executed successfully!"
+
+DNS_IP=*******

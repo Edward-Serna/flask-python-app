@@ -64,12 +64,12 @@ const Home = () => {
             />
           </div>
           <div className="LargeInput">
-            <p>SSH Key: </p>
+            <p>SSH Public Key: </p>
             <textarea
               value={sshKey}
               onChange={(event) => setSshKey(event.target.value)}
-              placeholder="Begins with ‘ssh-rsa’, ‘ecdsa-sha2-nistp256’, etc."
-              required
+              placeholder="Begins with ‘ssh-rsa’.pub, ‘ecdsa-sha2-nistp256’.pub, etc."
+              readOnly
             />
           </div>
           <div className="Button">

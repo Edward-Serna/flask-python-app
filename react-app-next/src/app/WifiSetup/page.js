@@ -15,7 +15,6 @@ const WifiSetup = () => {
   const [response, setResponse] = useState("");
   const [next, setNext] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
-
   const router = useRouter();
   const REQUIRED_NETWORK_COUNT = 1;
 
@@ -167,7 +166,6 @@ const WifiSetup = () => {
         )}
 
         {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) && <p className="SuccessMessage">Successfully Connected</p>}
-
         <div className="Button">
           {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) ? (
             <button onClick={() => router.push('/Download')}>Next</button>
