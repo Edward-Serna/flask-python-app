@@ -58,7 +58,7 @@ flask --app server run --debug
 cd react-flsk-app
 ```
 ```bash
-npm install --force
+npm install
 ```
 ```bash
 npm start
