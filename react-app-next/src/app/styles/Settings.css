@@ -1,0 +1,56 @@
+.SettingsCard {
+  background-color: var(--Card-Fill);
+  border: 1px solid var(--Card-Stroke);
+  border-radius: 10px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  box-shadow: 0px 0px 20px #0000005d;
+  overflow-y: hidden;
+}
+
+.SettingsCard h2 {
+  margin: 0px;
+}
+
+.SettingsCard p{
+  font-weight: 400;
+  font-size: 17px;
+  margin-bottom: 15px;
+}
+
+.Container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 750px;
+  min-width: 200px;
+}
+
+.header{
+  width: 100%;
+  height: fit-content;
+}
+
+.Control-Area {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  height: 100%;
+  padding: 10px;
+
+}
+
+.body{
+  width: 100%;
+  overflow-y: auto;
+  padding: 10px;
+}

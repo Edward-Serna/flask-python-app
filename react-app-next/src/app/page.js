@@ -69,7 +69,7 @@ const Home = () => {
               value={sshKey}
               onChange={(event) => setSshKey(event.target.value)}
               placeholder="Begins with ‘ssh-rsa’.pub, ‘ecdsa-sha2-nistp256’.pub, etc."
-              readOnly
+              
             />
           </div>
           <div className="Button">
