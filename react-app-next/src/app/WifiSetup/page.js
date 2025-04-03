@@ -24,7 +24,7 @@ const WifiSetup = () => {
   }, [selectedNetwork]);
 
   useEffect(() => {
-    fetch('http://192.168.1.107:5000/networks')
+    fetch('http://localhost:5000/networks')
       .then(response => response.json())
       .then(data => {
         setWifi(data.networks || []);
