@@ -3,24 +3,83 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import '../styles/home.css';
-import '../styles/Settings.css';
+import '../styles/Settings.css'
+
+import ConfigurationArea from "../Components/configuration";
 
 const SettingsPage = () => {
+  const [active, setActive] = useState("Config")
+
+  const renderBody = () => {
+    switch (active) {
+      case "Config": {
+        useEffect(() => {
+          fetch("http://192.168.1.107:5000/getUsers")
+            .then(response => response.json())
+            .then(data => {
+              setUsers(data || {});
+              console.log(data)
+            })
+            .catch(error => console.error("Error fetching users:", error));
+        }, []);
+        return (
+          <>
+            <h4>Configuration</h4>
+            <ConfigurationArea />
+          </>
+        )
+      }
+      case "System":
+        return (
+          <>
+            <h4>System</h4>
+            <div>System content goes here</div>
+          </>
+        )
+      case "Download":
+        return (
+          <>
+            <h4>Download</h4>
+            <div>Download content goes here</div>
+          </>
+        )
+      default:
+        return (
+          <>
+            <h4>Configuration</h4>
+            <ConfigurationArea />
+          </>
+        );
+    }
+  };
 
   return (
     <div className="Page">
-      <div  className="Container">
+      <div className="Container">
         <Image src="MF_Logo.svg" width={300} height={100} alt="Logo" />
         <div className="SettingsCard">
           <div className="header">
-            <h2>Settings</h2>
+            <div className="title1">
+              <h3>Settings</h3>
+            </div>
+            <div className="title2">
+              <h3>System v1.0</h3>
+            </div>
           </div>
           <div className="Control-Area">
             <div className="sidebar">
-            <h4>Config</h4>
+              <div className={("Config" === active) ? "itemActive" : "item"} onClick={() => setActive("Config")}>
+                <h5>Configuration</h5>
+              </div>
+              <div className={("System" === active) ? "itemActive" : "item"} onClick={() => setActive("System")}>
+                <h5>System</h5>
+              </div>
+              <div className={("Download" === active) ? "itemActive" : "item"} onClick={() => setActive("Download")}>
+                <h5>Download</h5>
+              </div>
             </div>
             <div className="body">
-            <h4>body</h4>
+              {renderBody()}
             </div>
           </div>
         </div>

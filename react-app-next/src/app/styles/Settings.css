@@ -1,41 +1,62 @@
+.Container {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  min-width: 300px;
+  max-width: 700px;
+}
+
 .SettingsCard {
   background-color: var(--Card-Fill);
   border: 1px solid var(--Card-Stroke);
-  border-radius: 10px;
-  height: 350px;
+  border-radius: 5px;
+  height: 400px;
   display: flex;
   flex-direction: column;
-  padding: 30px;
   box-shadow: 0px 0px 20px #0000005d;
-  overflow-y: hidden;
 }
 
-.SettingsCard h2 {
+.SettingsCard h3 {
   margin: 0px;
+}
+.SettingsCard h4 {
+  margin: 15px 0px;
 }
 
 .SettingsCard p{
   font-weight: 400;
-  font-size: 17px;
-  margin-bottom: 15px;
-}
-
-.Container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 750px;
-  min-width: 200px;
+  font-size: 13px;
+  margin-bottom: 10px;
 }
 
 .header{
+  height: fit-content;
+  border-bottom: 1px solid var(--Card-Stroke);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.title1{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  min-width: 126px;
+  height: fit-content;
+  border-right: 1px solid var(--Card-Stroke);
+}
+
+.title2{
+  display: flex;
+  justify-content: center;
+  padding: 5px;
   width: 100%;
   height: fit-content;
+
 }
 
 .Control-Area {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: row;
 }
@@ -43,14 +64,43 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 150px;
-  height: 100%;
+  min-width: 130px ;
+  height: 325px;
   padding: 10px;
+  padding-top: 15px;
+  border-right: 1px solid var(--Card-Stroke);
+  gap: 10px;
+}
 
+.sidebar h5{
+  margin: 0px;
+}
+
+.item {
+  display: flex;
+  border-radius: 5px;
+  padding: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemActive {
+  display: flex;
+  border-radius: 5px;
+  padding: 6px;
+  background-color: var(--Dark-600);
+  align-items: center;
+  justify-content: center;}
+
+.item:hover {
+  cursor: pointer;
+  background-color: var(--Dark-800);
 }
 
 .body{
   width: 100%;
+  height: calc(100% );
+  padding: 0px 5%;
   overflow-y: auto;
-  padding: 10px;
+  overflow-x: hidden;
 }

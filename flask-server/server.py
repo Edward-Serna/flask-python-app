@@ -24,43 +24,11 @@ def save_users(users):
     with open(USERS_FILE, "w") as file:
         json.dump(users, file, indent=4)
         
-@app.route("/GetUsers", methods=["GET"])
+@app.route("/getUsers", methods=["GET"])
 def get_users():
-    try:
-        file_exists = os.path.exists(USERS_FILE)
-        if file_exists:
-            return jsonify({"fileExists": True}), 200
-        return jsonify({"fileExists": False}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    users = load_users()
+    return jsonify(users), 200
 
-
-
-@app.route("/newSSHKey", methods=["GET"])
-def new_SSH_Key():
-    try:
-        ssh_dir = os.path.expanduser("~/.ssh")
-        os.makedirs(ssh_dir, exist_ok=True)
-        key_filename = f"{ssh_dir}/Wizard/id_rsa_Wizard"
-
-        subprocess.run([
-            "ssh-keygen",
-            "-t", "rsa",
-            "-b", "2048",
-            "-f", key_filename,
-            "-N", "",
-            "-q"
-        ], check=True)
-
-        with open(f"{key_filename}.pub", "r") as pub_key_file:
-            public_key = pub_key_file.read().strip()
-
-        return jsonify({"message": "SSH key generated successfully!", "sshKey": public_key}), 200
-
-    except subprocess.CalledProcessError as e:
-        return jsonify({"error": f"SSH key generation failed: {e.stderr}"}), 500
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 @app.route("/addUser", methods=["POST"])
 def add_user():
@@ -68,23 +36,22 @@ def add_user():
     if not data:
         return jsonify({"error": "Invalid request data"}), 400
 
-    users = load_users()
-    users.append({
+    users = [{
         "UUID": str(uuid.uuid4()),
         "username": data.get("username"),
         "machineName": data.get("machineName"),
         "sshKey": data.get("sshKey"),
-    })
+    }]
 
     save_users(users)
 
-    return jsonify({"message": "User added successfully!", "users": users}), 200
+    return jsonify({"message": "User replaced successfully!", "users": users}), 200
+
 
 @app.route("/addNetwork", methods=["POST"])
 def add_network():
     try:
         data = request.json
-        prevUUID = data.get("prevUUID")
         ssid = data.get("selectedNetwork", {}).get("SSID")
         password = data.get("password", "")
 
@@ -144,18 +111,16 @@ def networks():
                 connected_networks.append({"SSID": parts[0].strip(), "Device": parts[1].strip()})
 
         users = load_users()
-        prevUUID = request.args.get("prevUUID")
 
         for network in connected_networks:
             if network["Device"] == "wlan0":
                 for user in users:
-                    if user.get("UUID") == prevUUID:
-                        user["network"] = {
-                            "SSID": network["SSID"],
-                            "Security": "Unknown" 
-                        }
-                        save_users(users)
-                        break
+                    user["network"] = {
+                        "SSID": network["SSID"],
+                        "Security": "Unknown" 
+                    }
+                    save_users(users)
+                    break
                 break
 
         return jsonify({"networks": networks, "connectedNetworks": connected_networks}), 200

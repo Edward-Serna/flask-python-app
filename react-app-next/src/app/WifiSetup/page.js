@@ -84,10 +84,9 @@ const WifiSetup = () => {
       <Image src="MF_Logo.svg" width={300} height={100} alt="Logo" />
       <div className="Card">
         <h2>Wireless Networks</h2>
-        
         {connectedNetworks.length > 0 && (
-          <div style={{ marginBottom: "10px" }}>
-            <h3>Connected Networks</h3>
+          <div>
+            <h3 style={{ marginBottom: "10px" }}>Connected Networks</h3>
             {connectedNetworks.map((net, index) => (
               <div key={index}>
                 <p>{net.SSID} : {net.Device}</p>
@@ -148,8 +147,8 @@ const WifiSetup = () => {
               )}
 
               <div className="Button">
-                <button onClick={handleConnect}>Connect</button>
-                <button type="button" onClick={() => setPopupOpen(false)}>Cancel</button>
+                <button className="Button1" onClick={handleConnect}>Connect</button>
+                <button className="Button1" type="button" onClick={() => setPopupOpen(false)}>Cancel</button>
               </div>
             </Popup>
 
@@ -168,9 +167,9 @@ const WifiSetup = () => {
         {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) && <p className="SuccessMessage">Successfully Connected</p>}
         <div className="Button">
           {(next || connectedNetworks.length > REQUIRED_NETWORK_COUNT) ? (
-            <button onClick={() => router.push('/Download')}>Next</button>
+            <button className="Button1" onClick={() => router.push('/Download')}>Next</button>
           ) : (
-            <button onClick={handleConnect}>Connect</button>
+            <button className="Button1" onClick={handleConnect}>Connect</button>
           )}
         </div>
       </div>
