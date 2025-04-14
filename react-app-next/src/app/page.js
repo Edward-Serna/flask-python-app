@@ -1,82 +1,56 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import './styles/home.css';
 
+import ConfigurationArea from "./Components/configuration";
+
 const Home = () => {
-  const [username, setUsername] = useState("");
-  const [machineName, setMachineName] = useState("");
-  const [sshKey, setSshKey] = useState("");
+  const [usersFile, setUsersFile] = useState(false);
+  const [users, setUsers] = useState([]);
+
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    try {
-      const response = await fetch("http://10.42.0.1:5000/addUser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, machineName, sshKey }),
-      });
+  useEffect(() => {
+    fetch("http://10.42.0.1:5000/getUsers")
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data || {});
+        console.log(data)
+      })
+      .catch(error => console.error("Error fetching users:", error));
+  }, []);
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log(result);
-        router.push('/WifiSetup');
-      } else {
-        console.log("Failed to add user");
-      }
-    } catch (err) {
-      console.error("Error:", err);
-    }
-  };
+
+  const handleRoute = () => {
+    router.push('/WifiSetup')
+  }
 
   return (
     <div className="Page">
       <Image src="MF_Logo.svg" width={300} height={100} alt="Logo" />
-      <div className="Card">
-        <h2>Welcome</h2>
-        <p>Please complete the setup.</p>
-      </div>
-
-      <div className="Card">
-        <h2>First Time Setup</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="CardItem">
-            <p>Username: </p>
-            <input
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
-              type="text"
-              required
-            />
+      {!usersFile ?
+        <>
+          <div className="Card">
+            <h2>Welcome</h2>
+            <p> Welcome to your new device! Please fill out the necessary information to get started.</p>
           </div>
-          <div className="CardItem">
-            <p>Machine Name: </p>
-            <input
-              value={machineName}
-              onChange={(event) => setMachineName(event.target.value)}
-              type="text"
-              required
-            />
+          <div className="Card">
+            <h2>First Time Setup</h2>
+            <ConfigurationArea route={handleRoute} />
           </div>
-          <div className="LargeInput">
-            <p>SSH Public Key: </p>
-            <textarea
-              value={sshKey}
-              onChange={(event) => setSshKey(event.target.value)}
-              placeholder="Begins with ‘ssh-rsa’.pub, ‘ecdsa-sha2-nistp256’.pub, etc."
-              
-            />
-          </div>
+        </>
+        :
+        <div className="Card">
+          <h3>Your device is already Configured!</h3>
+          <p>The username, machine name, and the public ssh key can be found in the settings page.</p>
           <div className="Button">
-            <button type="submit">Next</button>
+            <button className="Button2" onClick={() => router.push('/Settings')}>Setting</button>
           </div>
-        </form>
-      </div>
+        </div>
+      }
     </div>
   );
 };

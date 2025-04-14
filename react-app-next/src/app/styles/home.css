@@ -18,7 +18,7 @@
   border-radius: 10px;
   height: fit-content;
   width: 60%;
-  max-width: 450px;
+  max-width: 470px;
   /* max-height: 600px; */
   /* max-width: 1000px; */
   display: flex;
@@ -62,15 +62,17 @@
 
 .Card2Item h5{
   margin: 0px;
-  padding: 0px;
+  padding: 0px; 
 }
 
 .Card h2 {
   margin: 0px;
-  margin-bottom: 15px;
+  margin-top: 5px;
+  margin-bottom: 10px;
 }
 .Card h3 {
   margin: 0px;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 
@@ -107,8 +109,8 @@
 }
 
 .CardItem input:focus {
-  background-color: var(--Input-Fill);
-  border: 1px solid var(--Input-Stroke);
+  background-color: var(--Dark-600);
+  border: 1px solid var(--Dark-400);
   border-radius: 3px;
   outline: unset;
 }
@@ -119,33 +121,30 @@
   margin-bottom: 10px;
 }
 .LargeInput p{
-  margin-bottom: 15px;
+  margin: 0px 0px 10px 0px;
 }
 
-.LargeInput textarea {
-  height: 200px;
-  width: 100%;
-  max-width: 425px;
-  align-self: center;
-  padding: 10px;
-  color: #F2F2F2;
+.TextArea {
+  display: block;
+  height: 125px;
+  padding: 6px;
+  color: #ADADAD;
   background-color: var(--Input-Fill);
   border: 1px solid var(--Input-Stroke);
   border-radius: 3px;
   resize: none;
+  font-size: 12px;
 }
 
-.LargeInput textarea::placeholder {
+.TextArea::placeholder {
   font-size: 12px;
   color: #ADADAD;
 }
 
-.LargeInput textarea:focus {
-  background-color: var(--Input-Fill);
-  border: 1px solid var(--Input-Stroke);
-  border-radius: 3px;
-  outline: unset;
+.TextArea:focus {
+  outline: none;
 }
+
 
 .Button {
   display: flex; 
@@ -158,13 +157,28 @@
   margin-top: 0px;
 }
 
-.Button button{
+.Button1{
   background-color: var(--Button-Fill);
   border: 1px solid var(--Button-Stroke);
   border-radius: 5px;
   color: white;
   height: 30px;
   width: 75px;
+}
+
+.Button2{
+  background-color: var(--Dark-700);
+  border: 1px solid var(--Dark-600);
+  border-radius: 5px;
+  font-size: medium;
+  color: white;
+  height: 30px;
+  width: 75px;
+}
+
+.CopyButton{
+  background-color: var(--Dark-600) !important;
+  border: 1px solid var(--Dark-500) !important;
 }
 
 .popup-content{

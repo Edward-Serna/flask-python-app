@@ -23,6 +23,12 @@ def load_users():
 def save_users(users):
     with open(USERS_FILE, "w") as file:
         json.dump(users, file, indent=4)
+        
+@app.route("/getUsers", methods=["GET"])
+def get_users():
+    users = load_users()
+    return jsonify(users), 200
+
 
 @app.route("/addUser", methods=["POST"])
 def add_user():
@@ -30,23 +36,22 @@ def add_user():
     if not data:
         return jsonify({"error": "Invalid request data"}), 400
 
-    users = load_users()
-    users.append({
+    users = [{
         "UUID": str(uuid.uuid4()),
         "username": data.get("username"),
         "machineName": data.get("machineName"),
         "sshKey": data.get("sshKey"),
-    })
+    }]
+
     save_users(users)
 
-    return jsonify({"message": "User added successfully!", "users": users}), 200
+    return jsonify({"message": "User replaced successfully!", "users": users}), 200
 
 
 @app.route("/addNetwork", methods=["POST"])
 def add_network():
     try:
         data = request.json
-        prevUUID = data.get("prevUUID")
         ssid = data.get("selectedNetwork", {}).get("SSID")
         password = data.get("password", "")
 
@@ -73,7 +78,6 @@ def add_network():
 
     except subprocess.CalledProcessError as e:
         return jsonify({"message": f"{e.stderr}"}), 500
-
 
 @app.route("/networks", methods=["GET"])
 def networks():
@@ -107,18 +111,16 @@ def networks():
                 connected_networks.append({"SSID": parts[0].strip(), "Device": parts[1].strip()})
 
         users = load_users()
-        prevUUID = request.args.get("prevUUID")
 
         for network in connected_networks:
             if network["Device"] == "wlan0":
                 for user in users:
-                    if user.get("UUID") == prevUUID:
-                        user["network"] = {
-                            "SSID": network["SSID"],
-                            "Security": "Unknown" 
-                        }
-                        save_users(users)
-                        break
+                    user["network"] = {
+                        "SSID": network["SSID"],
+                        "Security": "Unknown" 
+                    }
+                    save_users(users)
+                    break
                 break
 
         return jsonify({"networks": networks, "connectedNetworks": connected_networks}), 200
@@ -127,4 +129,4 @@ def networks():
         return jsonify({"error": f"Failed to fetch networks: {e.stderr}"}), 400
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5000)
