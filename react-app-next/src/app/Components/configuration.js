@@ -13,7 +13,7 @@ const ConfigurationArea = ({ route }) => {
     e.preventDefault();
     if (sshKey) {
       try {
-        const response = await fetch("http://192.168.1.107:5000/addUser", {
+        const response = await fetch("http://10.42.0.1:5000/addUser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
