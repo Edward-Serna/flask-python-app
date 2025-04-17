@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import '../styles/home.css';
 import '../styles/Settings.css';
 
@@ -8,6 +8,20 @@ const ConfigurationArea = ({ route }) => {
   const [username, setUsername] = useState("");
   const [machineName, setMachineName] = useState("");
   const [sshKey, setSshKey] = useState("");
+
+  useEffect(() => {
+    fetch("http://192.168.1.107:5000/getUsers")
+      .then(response => response.json())
+      .then(data => {
+        if(data[0]){
+          setUsername(data[0].username)
+          setMachineName(data[0].machineName)
+          setSshKey(data[0].sshKey)
+        }
+      })
+      .catch(error => console.log("Error fetching users:", error));
+  }, [])
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

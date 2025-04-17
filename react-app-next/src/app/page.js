@@ -8,19 +8,22 @@ import ConfigurationArea from "./Components/configuration";
 
 const Home = () => {
   const [usersFile, setUsersFile] = useState(false);
-  const [users, setUsers] = useState([]);
-
   const router = useRouter();
 
   useEffect(() => {
     fetch("http://192.168.1.107:5000/getUsers")
       .then(response => response.json())
       .then(data => {
-        setUsers(data || {});
-        console.log(data)
+        if(data[0]){
+          setUsername(data[0].username)
+          setMachineName(data[0].machineName)
+          setSshKey(data[0].sshKey)
+          setUsersFile(true)
+        }
       })
-      .catch(error => console.error("Error fetching users:", error));
-  }, []);
+      .catch(error => console.log("Error fetching users:", error));
+  }, [])
+
 
   const handleRoute = () => {
     router.push('/WifiSetup')
