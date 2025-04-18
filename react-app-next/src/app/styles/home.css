@@ -175,6 +175,14 @@
   height: 30px;
   width: 75px;
 }
+.Button3{
+  background-color: var(--Button-Fill);
+  border: 1px solid var(--Button-Stroke);
+  border-radius: 5px;
+  color: white;
+  height: 30px;
+  width: 75px;
+}
 
 .CopyButton{
   background-color: var(--Dark-600) !important;

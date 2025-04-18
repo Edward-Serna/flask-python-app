@@ -5,7 +5,8 @@ import Image from "next/image";
 import '../styles/home.css';
 import '../styles/Settings.css'
 
-import ConfigurationArea from "../Components/configuration";
+import ConfigurationArea from "../Components/configurationArea";
+import WifiArea from "../Components/wifiArea";
 
 const SettingsPage = () => {
   const [active, setActive] = useState("Config")
@@ -22,10 +23,7 @@ const SettingsPage = () => {
       }
       case "System":
         return (
-          <>
-            <h4>System</h4>
-            <div>System content goes here</div>
-          </>
+            <WifiArea/>
         )
       case "Download":
         return (

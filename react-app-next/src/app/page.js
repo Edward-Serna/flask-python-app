@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import './styles/home.css';
 
-import ConfigurationArea from "./Components/configuration";
+import ConfigurationArea from "./Components/configurationArea";
 
 const Home = () => {
   const [usersFile, setUsersFile] = useState(false);

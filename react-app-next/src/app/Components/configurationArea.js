@@ -13,7 +13,7 @@ const ConfigurationArea = ({ route }) => {
     fetch("http://192.168.1.107:5000/getUsers")
       .then(response => response.json())
       .then(data => {
-        if(data[0]){
+        if (data[0]) {
           setUsername(data[0].username)
           setMachineName(data[0].machineName)
           setSshKey(data[0].sshKey)
