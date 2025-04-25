@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import '../styles/home.css';
 import '../styles/Settings.css'
 
 import ConfigurationArea from "../Components/configurationArea";
 import WifiArea from "../Components/wifiArea";
+import DownloadArea from "../Components/downloadArea";
 
 const SettingsPage = () => {
   const [active, setActive] = useState("Config")
@@ -28,8 +29,8 @@ const SettingsPage = () => {
       case "Download":
         return (
           <>
-            <h4>Download</h4>
-            <div>Download content goes here</div>
+            <h4>Modifly Platform</h4>
+            <DownloadArea/>
           </>
         )
       default:

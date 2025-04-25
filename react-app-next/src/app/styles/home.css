@@ -126,7 +126,7 @@
 
 .TextArea {
   display: block;
-  height: 125px;
+  height: 115px;
   padding: 6px;
   color: #ADADAD;
   background-color: var(--Input-Fill);
@@ -200,7 +200,6 @@
   max-width: 400px !important;
 
 }
-
 .PasswordArea {
   display: flex;
   flex-direction: column;

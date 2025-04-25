@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import '../styles/home.css';
+
+import Popup from 'reactjs-popup';
+
 import '../styles/Settings.css';
+import 'reactjs-popup/dist/index.css';
 
 const ConfigurationArea = ({ route }) => {
   const [username, setUsername] = useState("");
   const [machineName, setMachineName] = useState("");
+  const [popupOpen, setPopupOpen] = useState(false);
   const [sshKey, setSshKey] = useState("");
 
   useEffect(() => {
@@ -21,6 +25,14 @@ const ConfigurationArea = ({ route }) => {
       })
       .catch(error => console.log("Error fetching users:", error));
   }, [])
+
+  // useEffect(() => {
+  //   const timeoutId = setTimeout(() => {
+  //     setPopupOpen(false);
+  //   }, 500);
+
+  //   return () => clearTimeout(timeoutId);
+  // }, [popupOpen]);
 
 
   const handleSubmit = async (e) => {
@@ -38,6 +50,7 @@ const ConfigurationArea = ({ route }) => {
         if (response.ok) {
           const result = await response.json();
           console.log(result);
+          setPopupOpen(true)
           if (route) {
             route()
           }
@@ -85,6 +98,9 @@ const ConfigurationArea = ({ route }) => {
         <div className="Button">
           <button className="Button1" type="submit">Save</button>
         </div>
+        <Popup open={popupOpen} onClose={() => setPopupOpen(false)} modal nested>
+          <h5 style={{width: "auto", padding: "10px", justifySelf: "center"}}>SAVED!</h5>    
+        </Popup>
       </form>
     </>
   );
