@@ -24,8 +24,6 @@
   font-weight: 400;
   font-size: 17px;
   margin-bottom: 15px;
-
-
 }
 
 .Body{
@@ -47,7 +45,7 @@
   font-size: medium;
   color: white;
   height: 30px;
-  width: 200px;
+  width: 175px;
 }
 
 .DownloadButton:hover{

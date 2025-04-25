@@ -8,7 +8,13 @@
   gap: 10px;
 }
 
+.Container img {
+  display: flex;
+  justify-self: center !important;
+}
+
 .img {
+  display: flex;
   margin-bottom: 20px;
 }
 
@@ -34,7 +40,8 @@
   background-color: var(--Card2-Fill);
   border: 2px solid var(--Card2-Stroke);
   border-radius: 3%;
-  height: 300px;
+  height: fit-content;
+  max-height: 200px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -126,7 +133,7 @@
 
 .TextArea {
   display: block;
-  height: 115px;
+  height: 75px;
   padding: 6px;
   color: #ADADAD;
   background-color: var(--Input-Fill);

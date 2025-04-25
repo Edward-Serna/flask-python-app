@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import '../styles/home.css';
 import '../styles/Settings.css';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
@@ -27,7 +26,7 @@ const wifiArea = () => {
         setConnectedNetworks(data.connectedNetworks || []);
       })
       .catch(error => console.error("Error fetching networks:", error));
-  }, []);
+  }, [popupOpen]);
 
   const handleSelect = (network) => {
     setSelectedNetwork(network);
@@ -74,6 +73,10 @@ const wifiArea = () => {
     }
   };
 
+  const handleForget = async (e) => {
+
+  }
+
   return (
     <>
       {connectedNetworks.length > 0 && (
@@ -87,25 +90,24 @@ const wifiArea = () => {
         </div>
       )}
 
-      {(wifi.length >= 0 && wifi) && (
+      {(connectedNetworks.length < 2) ? (
         <>
           <div className="CardItem">
             <div className="Card2">
-
-{                wifi.map((obj, index) => (
-                  <div
-                    key={index}
-                    className={`Card2Item ${selectedNetwork === obj ? 'selected' : ''}`}
-                    onClick={() => handleSelect(obj)}
-                  >
-                    <div className="SSID">
-                      <p>{obj.SSID}</p>
-                      {obj.Security ? <img src="lock-closed.svg" alt="Secured" /> : null}
-                    </div>
-                    <p>{obj.Signal_Percent ? signalIcon(obj.Signal_Percent) : <img src="perfectSignal.svg" alt="Signal" />}</p>
+              {wifi.map((obj, index) => (
+                <div
+                  key={index}
+                  className={`Card2Item ${selectedNetwork === obj ? 'selected' : ''}`}
+                  onClick={() => handleSelect(obj)}
+                >
+                  <div className="SSID">
+                    <p>{obj.SSID}</p>
+                    {obj.Security ? <img src="lock-closed.svg" alt="Secured" /> : null}
                   </div>
-                ))
-}
+                  <p>{obj.Signal_Percent ? signalIcon(obj.Signal_Percent) : <img src="perfectSignal.svg" alt="Signal" />}</p>
+                </div>
+              ))
+              }
             </div>
           </div>
 
@@ -148,9 +150,12 @@ const wifiArea = () => {
               <p>{response}</p>
             </div>
           )}
+          <button className="Button3" onClick={handleConnect}>Save</button>
         </>
-      )}
-      <button className="Button3" onClick={handleConnect}>Save</button>
+      ) : (
+        <button className="Button3" onClick={handleForget}>Forget</button>
+      )
+      }
     </>
   );
 };

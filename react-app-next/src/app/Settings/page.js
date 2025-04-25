@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import '../styles/home.css';
-import '../styles/Settings.css'
-
 import ConfigurationArea from "../Components/configurationArea";
 import WifiArea from "../Components/wifiArea";
 import DownloadArea from "../Components/downloadArea";
@@ -46,7 +43,7 @@ const SettingsPage = () => {
   return (
     <div className="Page">
       <div className="Container">
-        <Image src="MF_Logo.svg" width={300} height={100} alt="Logo" />
+        <Image className="img" src="MF_Logo.svg" width={300} height={100} alt="Logo" />
         <div className="SettingsCard">
           <div className="header">
             <div className="title1">

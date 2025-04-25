@@ -1,13 +1,11 @@
-// pages/api/download.js
-
 const fs = require("fs");
 const path = require("path");
 
-export default function handler(req, res) {
+export default function apiHandler(req, res) {
     const filePath = path.join(process.cwd(),
         "public", "next.svg"); // Path to your file
     // Filename for the downloaded file
-    const fileName = "gfgNextJs.svg";
+    const fileName = "MF_Logo.svg";
 
     // Check if the file exists
     if (!fs.existsSync(filePath)) {

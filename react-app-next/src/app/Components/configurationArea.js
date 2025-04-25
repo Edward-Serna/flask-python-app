@@ -66,7 +66,7 @@ const ConfigurationArea = ({ route }) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form  style={{alignContent: "center"}} onSubmit={handleSubmit}>
         <div className="CardItem">
           <p>Username: </p>
           <input
