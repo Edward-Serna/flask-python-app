@@ -4,10 +4,12 @@ import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import './styles/home.css';
 
-import ConfigurationArea from "./Components/configurationArea";
+import ConfigurationArea from "./Components/configuration";
 
 const Home = () => {
   const [usersFile, setUsersFile] = useState(false);
+  const [users, setUsers] = useState([]);
+
   const router = useRouter();
 
 
@@ -15,16 +17,11 @@ const Home = () => {
     fetch("http://10.42.0.1:5000/getUsers")
       .then(response => response.json())
       .then(data => {
-        if(data[0]){
-          setUsername(data[0].username)
-          setMachineName(data[0].machineName)
-          setSshKey(data[0].sshKey)
-          setUsersFile(true)
-        }
+        setUsers(data || {});
+        console.log(data)
       })
-      .catch(error => console.log("Error fetching users:", error));
-  }, [])
-
+      .catch(error => console.error("Error fetching users:", error));
+  }, []);
 
 
   const handleRoute = () => {
