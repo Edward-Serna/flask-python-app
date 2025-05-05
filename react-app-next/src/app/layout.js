@@ -1,7 +1,7 @@
 import "./styles/globals.css";
 
 export const metadata = {
-  title: "Getting Started!",
+  title: "Getting Started Wizard",
   description: "Wizard for new users and Settings page",
 };
 

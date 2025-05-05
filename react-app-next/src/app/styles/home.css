@@ -8,7 +8,13 @@
   gap: 10px;
 }
 
+.Container img {
+  display: flex;
+  justify-self: center !important;
+}
+
 .img {
+  display: flex;
   margin-bottom: 20px;
 }
 
@@ -34,7 +40,8 @@
   background-color: var(--Card2-Fill);
   border: 2px solid var(--Card2-Stroke);
   border-radius: 3%;
-  height: 300px;
+  height: fit-content;
+  max-height: 200px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -126,7 +133,7 @@
 
 .TextArea {
   display: block;
-  height: 125px;
+  height: 75px;
   padding: 6px;
   color: #ADADAD;
   background-color: var(--Input-Fill);
@@ -175,6 +182,14 @@
   height: 30px;
   width: 75px;
 }
+.Button3{
+  background-color: var(--Button-Fill);
+  border: 1px solid var(--Button-Stroke);
+  border-radius: 5px;
+  color: white;
+  height: 30px;
+  width: 75px;
+}
 
 .CopyButton{
   background-color: var(--Dark-600) !important;
@@ -192,7 +207,6 @@
   max-width: 400px !important;
 
 }
-
 .PasswordArea {
   display: flex;
   flex-direction: column;

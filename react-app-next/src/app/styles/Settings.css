@@ -1,9 +1,15 @@
 .Container {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   width: 90%;
   min-width: 300px;
   max-width: 700px;
+}
+
+.Container img {
+  display: flex;
+  justify-self: center !important;
 }
 
 .SettingsCard {
@@ -26,7 +32,6 @@
 .SettingsCard p{
   font-weight: 400;
   font-size: 13px;
-  margin-bottom: 10px;
 }
 
 .header{
@@ -53,7 +58,6 @@
   padding: 5px;
   width: 100%;
   height: fit-content;
-
 }
 
 .Control-Area {
@@ -99,8 +103,21 @@
 
 .body{
   width: 100%;
-  height: calc(100% );
-  padding: 0px 5%;
+  height: 330px;
+  padding: 10px 5%;
   overflow-y: auto;
   overflow-x: hidden;
+}
+.body h4{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.body p{
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.popup-content  {
+  width: 100px !important;
 }
