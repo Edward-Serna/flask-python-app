@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import ConfigurationArea from "../Components/configurationArea";
-import WifiArea from "../Components/wifiArea";
-import DownloadArea from "../Components/downloadArea";
+import '../styles/home.css';
+import '../styles/Settings.css'
+
+import ConfigurationArea from "../Components/configuration";
 
 const SettingsPage = () => {
   const [active, setActive] = useState("Config")
@@ -30,13 +31,16 @@ const SettingsPage = () => {
       }
       case "System":
         return (
-            <WifiArea/>
+          <>
+            <h4>System</h4>
+            <div>System content goes here</div>
+          </>
         )
       case "Download":
         return (
           <>
-            <h4>Modifly Platform</h4>
-            <DownloadArea/>
+            <h4>Download</h4>
+            <div>Download content goes here</div>
           </>
         )
       default:
@@ -52,7 +56,7 @@ const SettingsPage = () => {
   return (
     <div className="Page">
       <div className="Container">
-        <Image className="img" src="MF_Logo.svg" width={300} height={100} alt="Logo" />
+        <Image src="MF_Logo.svg" width={300} height={100} alt="Logo" />
         <div className="SettingsCard">
           <div className="header">
             <div className="title1">

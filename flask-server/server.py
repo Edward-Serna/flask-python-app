@@ -27,8 +27,6 @@ def save_users(users):
 @app.route("/getUsers", methods=["GET"])
 def get_users():
     users = load_users()
-    if not users:
-         jsonify({"error": "Invalid request data"}), 400
     return jsonify(users), 200
 
 
@@ -38,25 +36,16 @@ def add_user():
     if not data:
         return jsonify({"error": "Invalid request data"}), 400
 
-    users = load_users()
+    users = [{
+        "UUID": str(uuid.uuid4()),
+        "username": data.get("username"),
+        "machineName": data.get("machineName"),
+        "sshKey": data.get("sshKey"),
+    }]
 
-    if users:
-        user = users[0]
-        user["username"] = data.get("username", user.get("username"))
-        user["machineName"] = data.get("machineName", user.get("machineName"))
-        user["sshKey"] = data.get("sshKey", user.get("sshKey"))
-        save_users(users)
-        return jsonify({"message": "User updated successfully!", "users": users}), 200
-    else:
-        new_user = {
-            "UUID": str(uuid.uuid4()),
-            "username": data.get("username"),
-            "machineName": data.get("machineName"),
-            "sshKey": data.get("sshKey"),
-        }
-        users = [new_user]
-        save_users(users)
-        return jsonify({"message": "User added successfully!", "users": users}), 200
+    save_users(users)
+
+    return jsonify({"message": "User replaced successfully!", "users": users}), 200
 
 
 @app.route("/addNetwork", methods=["POST"])
