@@ -12,6 +12,15 @@ const SettingsPage = () => {
   const renderBody = () => {
     switch (active) {
       case "Config": {
+        useEffect(() => {
+          fetch("http://10.42.0.1:5000/getUsers")
+            .then(response => response.json())
+            .then(data => {
+              setUsers(data || {});
+              console.log(data)
+            })
+            .catch(error => console.error("Error fetching users:", error));
+        }, []);
         return (
           <>
             <h4>Configuration</h4>
