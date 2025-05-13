@@ -1,7 +1,6 @@
-// "use client";
+"use client";
 
-// import { useEffect, useState } from "react";
-import '../styles/home.css';
+import { useCallback } from "react";import '../styles/home.css';
 import '../styles/Settings.css';
 import "../styles/Download.css";
 

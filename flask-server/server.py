@@ -31,6 +31,60 @@ def get_users():
          jsonify({"error": "Invalid request data"}), 400
     return jsonify(users), 200
 
+@app.route("/forgetNetwork", methods=["POST"])
+def forget_network():
+    try:
+        result = subprocess.run(["sudo", "nmcli", "-t", "-f", "NAME,TYPE", "connection", "show", "--active"],
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        wifi_connections = []
+        for line in result.stdout.decode().strip().split("\n"):
+            if not line:
+                continue
+            parts = line.split(":")
+            if len(parts) >= 2 and parts[1] == "802-11-wireless":  
+                wifi_connections.append(parts[0])
+
+
+        if not wifi_connections:
+            return jsonify({
+                "message": "No active Wi-Fi connection found.",
+                "networks": [],
+                "connectedNetworks": []
+            }), 200
+
+        for ssid in wifi_connections:
+            subprocess.run(["sudo", "nmcli", "connection", "down", ssid], check=True)
+            subprocess.run(["sudo", "nmcli", "connection", "delete", ssid], check=True)
+
+        networks = []
+        scan_result = subprocess.run(
+            ["nmcli", "-t", "-f", "SSID,SIGNAL,SECURITY", "dev", "wifi", "list"],
+            capture_output=True, text=True, check=True
+        )
+
+        for line in scan_result.stdout.strip().split("\n"):
+            parts = line.split(":")
+            if len(parts) >= 2:
+                ssid = parts[0].strip()
+                signal = int(parts[1]) if parts[1].isdigit() else 0
+                security = parts[2].strip() if len(parts) > 2 else "Unknown"
+                if ssid and not any(net["SSID"] == ssid for net in networks):
+                    networks.append({
+                        "SSID": ssid,
+                        "Signal_Percent": signal,
+                        "Security": security
+                    })
+
+        return jsonify({
+            "message": "Successfully disconnected and removed network(s).",
+            "networks": networks,
+            "connectedNetworks": []
+        }), 200
+
+    except subprocess.CalledProcessError as e:
+        return jsonify({"error": f"Failed to forget network: {e.stderr}"}), 500
+
+
 
 @app.route("/addUser", methods=["POST"])
 def add_user():

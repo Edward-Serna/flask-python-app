@@ -13,12 +13,7 @@ const wifiArea = () => {
   const [password, setPassword] = useState("");
   const [response, setResponse] = useState("");
 
-  useEffect(() => {
-    setResponse("");
-    setPassword("");
-  }, [selectedNetwork]);
-
-  useEffect(() => {
+  const fetchNetworks = () => {
     fetch('http://192.168.1.107:5000/networks')
       .then(response => response.json())
       .then(data => {
@@ -26,7 +21,17 @@ const wifiArea = () => {
         setConnectedNetworks(data.connectedNetworks || []);
       })
       .catch(error => console.error("Error fetching networks:", error));
-  }, [popupOpen]);
+  };
+  
+
+  useEffect(() => {
+    setResponse("");
+    setPassword("");
+  }, [selectedNetwork]);
+
+  useEffect(() => {
+    fetchNetworks();
+  }, [popupOpen]);  
 
   const handleSelect = (network) => {
     setSelectedNetwork(network);
@@ -74,41 +79,53 @@ const wifiArea = () => {
   };
 
   const handleForget = async (e) => {
-
-  }
+    try {
+      const res = await fetch("http://192.168.1.107:5000/forgetNetwork", { method: "POST" });
+      if (res.ok) {
+        fetchNetworks(); 
+      }
+      setPopupOpen(false);
+    } catch (error) {
+      console.error("Error forgetting network:", error);
+    }
+  };
+  
 
   return (
     <>
       {connectedNetworks.length > 0 && (
-        <div>
+        <>
           <h4 style={{ marginBottom: "10px" }}>Connected Networks</h4>
           {connectedNetworks.map((net, index) => (
             <div key={index}>
               <p>{net.SSID} : {net.Device}</p>
             </div>
           ))}
-        </div>
+        </>
       )}
 
       {(connectedNetworks.length < 2) ? (
         <>
           <div className="CardItem">
-            <div className="Card2">
-              {wifi.map((obj, index) => (
-                <div
-                  key={index}
-                  className={`Card2Item ${selectedNetwork === obj ? 'selected' : ''}`}
-                  onClick={() => handleSelect(obj)}
-                >
-                  <div className="SSID">
-                    <p>{obj.SSID}</p>
-                    {obj.Security ? <img src="lock-closed.svg" alt="Secured" /> : null}
+            {wifi.length>0 && (
+              <div className="Card2">
+                {wifi.map((obj, index) => (
+                  <div
+                    key={index}
+                    className={`Card2Item ${selectedNetwork === obj ? 'selected' : ''}`}
+                    onClick={() => handleSelect(obj)}
+                  >
+                    <div className="SSID">
+                      <p>{obj.SSID}</p>
+                      {obj.Security ? <img src="lock-closed.svg" alt="Secured" /> : null}
+                    </div>
+                    <p>{obj.Signal_Percent ? signalIcon(obj.Signal_Percent) : <img src="perfectSignal.svg" alt="Signal" />}</p>
                   </div>
-                  <p>{obj.Signal_Percent ? signalIcon(obj.Signal_Percent) : <img src="perfectSignal.svg" alt="Signal" />}</p>
-                </div>
-              ))
-              }
-            </div>
+                ))
+                }
+              </div>
+            )
+            }
           </div>
 
           <Popup open={popupOpen} onClose={() => setPopupOpen(false)} modal nested>

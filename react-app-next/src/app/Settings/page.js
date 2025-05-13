@@ -21,13 +21,13 @@ const SettingsPage = () => {
       }
       case "System":
         return (
-            <WifiArea/>
+          <WifiArea />
         )
       case "Download":
         return (
           <>
             <h4>Modifly Platform</h4>
-            <DownloadArea/>
+            <DownloadArea />
           </>
         )
       default:
@@ -43,7 +43,7 @@ const SettingsPage = () => {
   return (
     <div className="Page">
       <div className="Container">
-        <Image className="img" src="MF_Logo.svg" width={300} height={100} alt="Logo" />
+        <Image priority className="img" src="MF_Logo.svg" width={300} height={100} alt="Logo" />
         <div className="SettingsCard">
           <div className="header">
             <div className="title1">

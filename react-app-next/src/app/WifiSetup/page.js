@@ -81,7 +81,7 @@ const WifiSetup = () => {
 
   return (
     <div className="Page">
-      <Image src="MF_Logo.svg" width={300} height={100} alt="Logo" />
+      <Image priority src="MF_Logo.svg" width={300} height={100} alt="Logo" />
       <div className="Card">
         <h2>Wireless Networks</h2>
         {connectedNetworks.length > 0 && (
