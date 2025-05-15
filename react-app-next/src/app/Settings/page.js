@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import ConfigurationArea from "../Components/configurationArea";
 import WifiArea from "../Components/wifiArea";
@@ -12,15 +12,12 @@ const SettingsPage = () => {
   const renderBody = () => {
     switch (active) {
       case "Config": {
-        useEffect(() => {
-          fetch("http://10.42.0.1:5000/getUsers")
-            .then(response => response.json())
-            .then(data => {
-              setUsers(data || {});
-              console.log(data)
-            })
-            .catch(error => console.error("Error fetching users:", error));
-        }, []);
+        // useEffect(() => {
+        //   fetch("http://192.168.1.107:5000/getUsers")
+        //     .then(response => response.json())
+        //     .catch(error => console.error("Error fetching users:", error));
+        // }, []);
+        
         return (
           <>
             <h4>Configuration</h4>

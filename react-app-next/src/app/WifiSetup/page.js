@@ -24,7 +24,7 @@ const WifiSetup = () => {
   }, [selectedNetwork]);
 
   useEffect(() => {
-    fetch('http://10.42.0.1:5000/networks')
+    fetch('http://192.168.1.107:5000/networks')
       .then(response => response.json())
       .then(data => {
         setWifi(data.networks || []);
@@ -60,7 +60,7 @@ const WifiSetup = () => {
 
     try {
       setResponse("Connecting...");
-      const response = await fetch("http://10.42.0.1:5000/addNetwork", {
+      const response = await fetch("http://192.168.1.107:5000/addNetwork", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ selectedNetwork, password }),

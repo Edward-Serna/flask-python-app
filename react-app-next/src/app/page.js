@@ -10,9 +10,8 @@ const Home = () => {
   const [usersFile, setUsersFile] = useState(false);
   const router = useRouter();
 
-
   useEffect(() => {
-    fetch("http://10.42.0.1:5000/getUsers")
+    fetch("http://192.168.1.107:5000/getUsers")
       .then(response => response.json())
       .then(data => {
         if(data[0]){
